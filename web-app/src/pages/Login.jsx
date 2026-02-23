@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginStart, loginSuccess, loginFailure } from '../features/auth/authSlice';
+import { loginStart, loginSuccess, loginFailure } from '../auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {

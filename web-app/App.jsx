@@ -1,12 +1,12 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Landing from './pages/Landing';
-import Dashboard from './pages/Dashboard';
-import MandiPrices from './pages/MandiPrices';
-import SellProduce from './pages/SellProduce';
-import OrderDetails from './pages/OrderDetails';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Landing from './src/pages/Landing';
+import Dashboard from './src/pages/Dashboard';
+import MandiPrices from './src/pages/MandiPrices';
+import SellProduce from './src/pages/SellProduce';
+import OrderDetails from './src/pages/OrderDetails';
+import Login from './src/pages/Login';
+import Signup from './src/pages/Signup';
 import { useSelector } from 'react-redux';
 
 const PrivateRoute = ({ children }) => {

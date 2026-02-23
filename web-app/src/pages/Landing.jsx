@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import { ViewState } from '../constants';
+import { ViewState } from '../../constants.js';
 
 const Landing = ({ onNavigate, currentView }) => {
     return (

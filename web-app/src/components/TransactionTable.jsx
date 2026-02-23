@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewState } from '../constants';
+import { ViewState } from '../../constants';
 
 const TransactionTable = ({ onNavigate }) => {
     return (

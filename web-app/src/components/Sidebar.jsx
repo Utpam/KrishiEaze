@@ -1,12 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Logo_No_text from '../../Public/Logo_No_text.png';
 
 const Sidebar = () => {
     return (
         <aside className="w-64 bg-card-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 hidden md:flex flex-col h-full shadow-sm z-10">
             <NavLink to="/" className="p-6 flex items-center gap-3 cursor-pointer">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                    <span className="material-icons-outlined">agriculture</span>
+                        <span className="material-icons text-primary text-4xl">
+                            <img src={Logo_No_text} className='w-[4rem]' />
+                        </span>                
                 </div>
                 <h1 className="text-2xl font-bold text-primary tracking-tight">KrishiEaze</h1>
             </NavLink>

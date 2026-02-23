@@ -1,8 +1,8 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../features/auth/authSlice';
+import { logout } from '../auth/authSlice';
+import Logo_No_text from '../../Public/Logo_No_text.png';
 
 const Navbar = () => {
     const { isAuthenticated, user } = useSelector(state => state.auth);
@@ -18,13 +18,15 @@ const Navbar = () => {
         <nav className="sticky top-0 z-50 w-full glass-effect bg-white/80 dark:bg-background-dark/90 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
-                    <Link
+                    {!user && <Link
                         to="/"
                         className="flex-shrink-0 flex items-center gap-2 cursor-pointer"
                     >
-                        <span className="material-icons text-primary text-4xl">agriculture</span>
-                        <span className="font-bold text-2xl tracking-tight text-primary dark:text-green-400">KrishiEaze</span>
-                    </Link>
+                        <span className="material-icons text-primary text-4xl">
+                            <img src={Logo_No_text} className='w-[4rem]' />
+                        </span>
+                        <span className="font-bold text-2xl tracking-tight text-primary dark:text-green-400">Krishiaze</span>
+                    </Link>}
 
                     <div className="hidden md:flex space-x-8 items-center">
                         <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Home</Link>
