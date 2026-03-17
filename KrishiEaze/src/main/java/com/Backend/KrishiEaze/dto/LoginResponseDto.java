@@ -9,11 +9,11 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-
 public class LoginResponseDto {
-    private Long id;
+    private int id;
     private String jwt;
     private String otp;
     private String mobileNo;
     private String message;
+    private boolean isNewUser;
 }

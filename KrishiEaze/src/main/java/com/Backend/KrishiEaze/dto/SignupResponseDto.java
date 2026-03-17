@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class SignupResponseDto {
+    private int id;
     private String mobileNo;
     private String otp;
     private String message;

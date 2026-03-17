@@ -21,6 +21,7 @@ public class WebSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Allow OTP and Login endpoints
+                         .requestMatchers("/api/profile").permitAll()
                 .anyRequest().authenticated()
         );
         return httpSecurity.build();

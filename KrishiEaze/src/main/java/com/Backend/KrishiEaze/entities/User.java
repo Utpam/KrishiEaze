@@ -1,5 +1,6 @@
 package com.Backend.KrishiEaze.entities;
 
+import com.Backend.KrishiEaze.entities.type.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +23,17 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String mobileNo;
-
+    @Column(nullable = false,columnDefinition = "boolean default false")
+    private boolean profileCompleted = false;
+    private String firstName;
+    private String middleName;
+    private String surName;
+    private String district;
+    private String state;
+    @Column(length = 500)
+    private String address;
+    private RoleType role;
+    private String pinCode;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
