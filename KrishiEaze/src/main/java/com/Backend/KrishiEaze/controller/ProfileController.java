@@ -8,16 +8,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/profile")
 public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @PostMapping("/profile")
+    @PostMapping
     public ResponseEntity<ApiResponseDto> setProfile(@RequestBody ProfileRequestDto profileRequestDto, @RequestHeader("mobileNo") String mobileNo) {
         profileService.completeProfile(profileRequestDto,mobileNo);
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setMessage("Profile completed successfully! Welcome to KrishiEaze.");
+        apiResponseDto.setSuccess(true);
+        return ResponseEntity.ok(apiResponseDto);
+    }
+    @PutMapping
+    public ResponseEntity<ApiResponseDto> updateProfile(@RequestBody ProfileRequestDto profileRequestDto, @RequestHeader String mobileNo) {
+        profileService.updateProfileFields(profileRequestDto,mobileNo);
+        ApiResponseDto apiResponseDto = new ApiResponseDto();
+        apiResponseDto.setMessage("Fields Updated Successfully");
         apiResponseDto.setSuccess(true);
         return ResponseEntity.ok(apiResponseDto);
     }
