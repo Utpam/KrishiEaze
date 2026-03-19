@@ -2,6 +2,7 @@ package com.Backend.KrishiEaze.controller;
 
 import com.Backend.KrishiEaze.dto.ApiResponseDto;
 import com.Backend.KrishiEaze.dto.ProfileRequestDto;
+import com.Backend.KrishiEaze.entities.User;
 import com.Backend.KrishiEaze.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,11 @@ public class ProfileController {
     }
     @PutMapping
     public ResponseEntity<ApiResponseDto> updateProfile(@RequestBody ProfileRequestDto profileRequestDto, @RequestHeader String mobileNo) {
-        profileService.updateProfileFields(profileRequestDto,mobileNo);
+        User updatedUser =profileService.updateProfileFields(profileRequestDto,mobileNo);
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setMessage("Fields Updated Successfully");
         apiResponseDto.setSuccess(true);
+        apiResponseDto.setData(updatedUser);
         return ResponseEntity.ok(apiResponseDto);
     }
 }
