@@ -8,7 +8,7 @@ import java.util.Collection;
 // security/MobileAuthenticationToken.java
 public class CustomAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
-    private Object credentials;
+    private final Object credentials;
 
     public CustomAuthenticationToken(String mobileNo, String otp) {
         super((Collection<? extends GrantedAuthority>) null);

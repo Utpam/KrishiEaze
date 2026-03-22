@@ -15,8 +15,8 @@ public class WebSecurityConfig {
     private CustomAuthenticationProvider customAuthProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
-        httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+        http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                          .requestMatchers("/api/profile").permitAll()
                 .anyRequest().authenticated()
         );
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean

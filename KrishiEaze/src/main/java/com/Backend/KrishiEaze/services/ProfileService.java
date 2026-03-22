@@ -24,7 +24,7 @@ public class ProfileService {
         user.setFirstName(profileRequestDto.getFirstName());
         user.setMiddleName(profileRequestDto.getMiddleName());
         user.setSurName(profileRequestDto.getSurName());
-        user.setRole(profileRequestDto.getRole());
+       // user.setRoles(profileRequestDto.getRole());
         user.setAddress(profileRequestDto.getAddress());
         user.setDistrict(profileRequestDto.getDistrict());
         user.setState(profileRequestDto.getState());

@@ -21,6 +21,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
+
+        //typecasting the Object class into String class.
         String mobile = (String) auth.getPrincipal();
         String otp = (String) auth.getCredentials();
 

@@ -1,6 +1,6 @@
 package com.Backend.KrishiEaze.dto;
 
-import com.Backend.KrishiEaze.entities.type.RoleType;
+import com.Backend.KrishiEaze.entities.Role;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -14,5 +14,5 @@ public class ProfileRequestDto {
     public String state;
     private String district;
     private String pinCode;
-    private RoleType role;
+    private Role role;
 }
