@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private String surName;
     private String district;
     private String state;
+    private boolean isEnable = true;
     @Column(length = 500)
     private String address;
     private String pinCode;

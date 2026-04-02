@@ -1,6 +1,9 @@
 package com.Backend.KrishiEaze.security;
 
 import com.Backend.KrishiEaze.entities.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
@@ -64,4 +67,46 @@ public class JwtService {
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
     }
+
+    //generate refresh token
+    public String generateRefreshToken(User user, String jti) {
+        Instant now = Instant.now();
+        return Jwts.builder()
+                .id(jti)
+                .subject(user.getId().toString())
+                .issuer(issuer)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(refreshTtlSeconds)))
+                .claim("typ","refresh")
+                .signWith(secretKey,Jwts.SIG.HS512)
+                .compact();
+    }
+
+    //parse the token
+    public Jws<Claims> parse(String token) {
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+        } catch (JwtException e) {
+            throw new RuntimeException("Invalid JWT token", e);
+        }
+    }
+
+    public boolean isAccessToken(String token) {
+        Claims c = parse(token).getPayload();
+        return "access".equals(c.get("typ"));
+    }
+    public boolean isRefreshToken(String token) {
+        Claims c = parse(token).getPayload();
+        return "refresh".equals(c.get("typ"));
+    }
+    public UUID getUserId(String token) {
+        Claims c = parse(token).getPayload();
+        return UUID.fromString(c.getSubject());
+    }
+//    public String getEmail(String token) {
+//        Claims c = parse(token).getPayload();
+//        return "email".equals(c.get(user.getEmail));
+//    }
+
+
 }

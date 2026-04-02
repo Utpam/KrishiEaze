@@ -17,10 +17,10 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public CustomAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAuthenticationToken(Object principal,Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.credentials = null;
+        this.credentials = credentials;
         super.setAuthenticated(true);
     }
 
