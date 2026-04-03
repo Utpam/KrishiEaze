@@ -31,75 +31,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
-        logger.info("Authorization Header: {}" ,header);
 
-        //Token extraction, then validation then create Authentication and loads into security context
         if (header != null && header.startsWith("Bearer ")) {
-
             String token = header.substring(7);
 
             try {
-                //check access token
-                if (!jwtService.isAccessToken(token)) {//if token is not access token
-                    filterChain.doFilter(request,response);//move to next filter
-                    return;
-                }
-                Jws<Claims> parse = jwtService.parse(token);
-                Claims payload = parse.getPayload();
-                String mobileNo =payload.getSubject();
+                // 1. If it's NOT an access token, we just stop doing JWT logic.
+                // We DON'T call doFilter here. We let the one at the bottom handle it.
+                if (jwtService.isAccessToken(token)) {
 
-                userRepository.findByMobileNo(mobileNo)
-                        .ifPresent(user ->{
+                    Claims payload = jwtService.parse(token).getPayload();
 
-                            //check if user is enabled or not
-                            if (!user.isEnable() ) {//If user is not enable then move to next filter
-                                try {
-                                    filterChain.doFilter(request,response);
-                                    return;
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                } catch (ServletException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            //after getting user we can extract details from him like roles etc
-                            List<GrantedAuthority> authorities;
+                    // 2. Use the correct claim for the lookup
+                    String mobileNo = payload.get("mobileNo", String.class);
 
-                            if (user.getRoles() == null) {
-                                authorities = List.of();
-                            } else {
-                                authorities = user.getRoles()
-                                        .stream()
-                                        .map(role -> new SimpleGrantedAuthority(role.getName()))
-                                        .collect(Collectors.toList());
-                            }
+                    userRepository.findByMobileNo(mobileNo).ifPresent(user -> {
+
+                        // 3. Simple check: if enabled, set the context.
+                        if (user.isEnable() && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                            List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                                    .collect(Collectors.toList());
+
+                            // 4. Pass the USER OBJECT to satisfy AuthService casting
                             CustomAuthenticationToken authentication = new CustomAuthenticationToken(
                                     authorities,
-                                    user.getMobileNo(),
+                                    user,
                                     null
                             );
-                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));//Stores:Remote IP address and Session ID
-                            //checks if context doesn't have any context before loading authentication in context holder
-                            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                                SecurityContextHolder.getContext().setAuthentication(authentication);//loads authenticated object inside security context so user can access authorize request according to his role
-                            }
 
-                        });
-
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        }
+                    });
+                }
             } catch (ExpiredJwtException e) {
-                request.setAttribute("error","Token Expired");
-                // e.printStackTrace();
-            }  catch (Exception e) {
-                /* e.printStackTrace(); */
-                request.setAttribute("error","Invalid Token");
+                request.setAttribute("error", "Token Expired");
+            } catch (Exception e) {
+                request.setAttribute("error", "Invalid Token");
             }
         }
-        filterChain.doFilter(request,response);//moves to next filter
-        //CALL doFilter()
-        //Request continues →
-        //Controller is reached →
-        //API works
 
+        // 5. THE ONLY DO-FILTER.
+        // If the token was bad, disabled, or not an access token,
+        // the context is just empty and the next security filter will block it.
+        filterChain.doFilter(request, response);
     }
 
     @Override

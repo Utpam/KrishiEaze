@@ -4,6 +4,8 @@ import com.Backend.KrishiEaze.entities.Role;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @RequiredArgsConstructor
 public class ProfileRequestDto {
@@ -14,5 +16,5 @@ public class ProfileRequestDto {
     public String state;
     private String district;
     private String pinCode;
-    private Role role;
+    private Set<String> role;
 }

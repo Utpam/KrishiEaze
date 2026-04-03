@@ -17,7 +17,7 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public CustomAuthenticationToken(Object principal,Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAuthenticationToken(Collection<? extends GrantedAuthority> authorities,Object principal,Object credentials) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;

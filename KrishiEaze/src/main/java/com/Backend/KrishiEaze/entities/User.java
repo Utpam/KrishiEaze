@@ -1,5 +1,6 @@
 package com.Backend.KrishiEaze.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +23,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+    @JsonIgnore
     private String password;
     private String mobileNo;
     @Column(nullable = false,columnDefinition = "boolean default false")
@@ -31,6 +33,7 @@ public class User implements UserDetails {
     private String surName;
     private String district;
     private String state;
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isEnable = true;
     @Column(length = 500)
     private String address;

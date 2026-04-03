@@ -46,8 +46,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 });
 
         otpService.clearOtp(mobile);
-        return new CustomAuthenticationToken(user,user.getAuthorities());
-    }
+        return new CustomAuthenticationToken(
+                user.getAuthorities(), // 1. Authorities (Roles)
+                user,                  // 2. Principal (The whole User object)
+                null                   // 3. Credentials (OTP is no longer needed)
+        );    }
 
     @Override
     public boolean supports(Class<?> auth) {

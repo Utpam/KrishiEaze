@@ -41,7 +41,7 @@ public class JwtService {
     }
 
     //generate Jwt Token
-    public String generateJwtToken(User user) {
+    public String generateJwtToken(User user,String jti) {
         Instant now = Instant.now();
         List<String> roles;
 
@@ -54,7 +54,7 @@ public class JwtService {
                     .toList();
         }
         return Jwts.builder()
-                .id(UUID.randomUUID().toString())
+                .id(jti)
                 .subject(user.getId().toString())
                 .issuer(issuer)
                 .issuedAt(Date.from(now))
@@ -73,7 +73,7 @@ public class JwtService {
         Instant now = Instant.now();
         return Jwts.builder()
                 .id(jti)
-                .subject(user.getId().toString())
+                .subject(user.getMobileNo())
                 .issuer(issuer)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(refreshTtlSeconds)))
@@ -99,14 +99,42 @@ public class JwtService {
         Claims c = parse(token).getPayload();
         return "refresh".equals(c.get("typ"));
     }
-    public UUID getUserId(String token) {
+    public Long getUserId(String token) {
         Claims c = parse(token).getPayload();
-        return UUID.fromString(c.getSubject());
+        return Long.valueOf(c.getSubject());
     }
 //    public String getEmail(String token) {
 //        Claims c = parse(token).getPayload();
 //        return "email".equals(c.get(user.getEmail));
 //    }
 
+    public boolean validateToken(String token) {
+        try {
+            parse(token); // If this doesn't throw an exception, it's valid
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    // Extract the "sub" field from the token
+    public String extractSubject(String token) {
+        return parse(token).getPayload().getSubject();
+    }
+
+    // Extract the "mobileNo" custom claim (since refresh token uses it as subject)
+    public String extractMobileNo(String token) {
+        Claims claims = parse(token).getPayload();
+        // In your generateRefreshToken, you set subject to mobileNo
+        // In your generateJwtToken, you set a custom claim "mobileNo"
+        String mobileNo = claims.get("mobileNo", String.class);
+        if (mobileNo == null) {
+            mobileNo = claims.getSubject(); // Fallback to subject
+        }
+        return mobileNo;
+    }
+
+    public long getExpirationTime() {
+        return this.accessTtlSeconds;
+    }
 }

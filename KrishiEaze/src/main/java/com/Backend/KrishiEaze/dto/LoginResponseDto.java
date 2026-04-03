@@ -16,4 +16,5 @@ public class LoginResponseDto {
     private String mobileNo;
     private String message;
     private boolean isNewUser;
+    private TokenResponse tokenResponse;
 }

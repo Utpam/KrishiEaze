@@ -29,7 +29,7 @@ public class WebSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Allow OTP and Login endpoints
-                         .requestMatchers("/api/profile").authenticated()
+                         .requestMatchers("/api/profile/**").authenticated()
                 .anyRequest().authenticated()
         )
                 .exceptionHandling(ex-> ex.authenticationEntryPoint((request, response, authException) -> {
