@@ -6,6 +6,7 @@ import com.Backend.KrishiEaze.entities.Role;
 import com.Backend.KrishiEaze.entities.User;
 import com.Backend.KrishiEaze.repositories.RoleRepository;
 import com.Backend.KrishiEaze.repositories.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +31,7 @@ public class ProfileController {
     @PostMapping("/update")
     public ResponseEntity<ApiResponseDto> updateProfile(
             @AuthenticationPrincipal User user,
-            @RequestBody ProfileRequestDto dto) {
+            @Valid @RequestBody ProfileRequestDto dto) {
 
         // 1. Map basic details
         user.setFirstName(dto.getFirstName());
