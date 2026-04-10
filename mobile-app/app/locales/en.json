@@ -1,0 +1,32 @@
+{
+  "common": {
+    "namaste": "Namaste",
+    "krishieaze": "KrishiEaze",
+    "home": "Home",
+    "listings": "Listings",
+    "orders": "Orders",
+    "profile": "Profile"
+  },
+  "home": {
+    "greetingUser": "Namaste,",
+    "farmStatus": "Your farm's pulse is looking healthy today.\nYou have 3 pending pick-ups for your wheat harvest.",
+    "totalEarnings": "TOTAL EARNINGS",
+    "thisMonth": "+12% this month",
+    "activeOrders": "Active Orders",
+    "activeListings": "Active Listings",
+    "latestMandiPrices": "Latest Mandi Prices",
+    "viewAll": "View All",
+    "wheat": "Wheat",
+    "riceBasmati": "Rice (Basmati)",
+    "maize": "Maize",
+    "perQuintal": "PER QUINTAL",
+    "recentTransactions": "Recent Transactions",
+    "bulkWheatSale": "Bulk Wheat Sale",
+    "fertilizerPurchase": "Fertilizer Purchase",
+    "organicCornSale": "Organic Corn Sale",
+    "status": {
+      "completed": "Completed",
+      "processed": "Processed"
+    }
+  }
+}
