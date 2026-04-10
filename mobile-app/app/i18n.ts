@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
+import mr from './locales/mr.json';
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
@@ -45,7 +46,11 @@ const resources = {
   hi: {
     translation: hi,
   },
+  mr: {
+    translation: mr,
+  },
 };
+
 
 i18n
   .use(initReactI18next)

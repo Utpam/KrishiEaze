@@ -1,0 +1,32 @@
+{
+  "common": {
+    "namaste": "नमस्ते",
+    "krishieaze": "कृषिईज (KrishiEaze)",
+    "home": "होम",
+    "listings": "सूची",
+    "orders": "ऑर्डर",
+    "profile": "प्रोफाईल"
+  },
+  "home": {
+    "greetingUser": "नमस्ते,",
+    "farmStatus": "तुमच्या शेताची स्थिती आज निरोगी दिसत आहे.\nतुमच्या गव्हाच्या कापणीसाठी 3 पिक-अप प्रलंबित आहेत.",
+    "totalEarnings": "एकूण कमाई",
+    "thisMonth": "या महिन्यात +12%",
+    "activeOrders": "सक्रिय ऑर्डर्स",
+    "activeListings": "सक्रिय सूची",
+    "latestMandiPrices": "नवीनतम बाजार भाव",
+    "viewAll": "सर्व पहा",
+    "wheat": "गहू",
+    "riceBasmati": "तांदूळ (बासमती)",
+    "maize": "मका",
+    "perQuintal": "प्रति क्विंटल",
+    "recentTransactions": "अलीकडील व्यवहार",
+    "bulkWheatSale": "घाऊक गहू विक्री",
+    "fertilizerPurchase": "खत खरेदी",
+    "organicCornSale": "सेंद्रिय मका विक्री",
+    "status": {
+      "completed": "पूर्ण झाले",
+      "processed": "प्रक्रिया केली"
+    }
+  }
+}

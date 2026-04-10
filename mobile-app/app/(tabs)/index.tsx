@@ -1,19 +1,53 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
+  const [langModalVisible, setLangModalVisible] = useState(false);
 
-  const toggleLanguage = () => {
-    const nextLang = i18n.language === 'en' ? 'hi' : 'en';
-    i18n.changeLanguage(nextLang);
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setLangModalVisible(false);
+  };
+
+  const currentLangLabel = () => {
+    if(i18n.language === 'en') return 'Eng';
+    if(i18n.language === 'hi') return 'हिंदी';
+    if(i18n.language === 'mr') return 'मराठी';
+    return 'Eng';
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      
+      {/* Language Selection Modal */}
+      <Modal visible={langModalVisible} transparent={true} animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Choose Language</Text>
+            
+            <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('en')}>
+              <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>English</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('hi')}>
+              <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>हिंदी</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('mr')}>
+              <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>मराठी</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.closeModalButton} onPress={() => setLangModalVisible(false)}>
+              <Text style={styles.closeModalText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
         {/* Header */}
@@ -23,8 +57,9 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <Text style={styles.logoText}>{t('common.krishieaze')}</Text>
           <View style={styles.headerRight}>
-            <TouchableOpacity onPress={toggleLanguage} style={styles.langButton}>
-              <Text style={styles.langText}>{i18n.language === 'en' ? 'A/अ' : 'अ/A'}</Text>
+            <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langButton}>
+              <MaterialIcons name="language" size={16} color="#085836" style={{marginRight: 4}} />
+              <Text style={styles.langText}>{currentLangLabel()}</Text>
             </TouchableOpacity>
             <TouchableOpacity>
               <MaterialIcons name="notifications" size={26} color="#555" />
@@ -201,15 +236,17 @@ const styles = StyleSheet.create({
   },
   langButton: {
     backgroundColor: '#E8F5E9',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 8,
     marginRight: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   langText: {
     color: '#085836',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 13,
   },
   logoText: {
     fontSize: 22,
@@ -436,6 +473,57 @@ const styles = StyleSheet.create({
   },
   txBadgeText: {
     fontSize: 10,
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 280,
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111',
+    marginBottom: 20,
+  },
+  langOption: {
+    width: '100%',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    alignItems: 'center',
+  },
+  langOptionText: {
+    fontSize: 16,
+    color: '#555',
+  },
+  langOptionTextActive: {
+    color: '#085836',
+    fontWeight: 'bold',
+  },
+  closeModalButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+  },
+  closeModalText: {
+    fontSize: 14,
+    color: '#555',
     fontWeight: '600',
   },
 });
