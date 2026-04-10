@@ -26,7 +26,7 @@ public class ProfileRequestDto {
     @Size(max = 500, message = "Address is too long")
     private String address;
 
-
+    @NotBlank(message = "State is required for Mandi List")
     public String state;
 
     @NotBlank(message = "District is required for Mandi prices")
@@ -35,5 +35,7 @@ public class ProfileRequestDto {
     @NotBlank(message = "Pincode is required")
     @Pattern(regexp = "^\\d{6}$", message = "Pincode must be exactly 6 digits")
     private String pinCode;
-    private Set<String> role;
+    private Set<String> roles;
+    private Double lat;
+    private Double lng;
 }
