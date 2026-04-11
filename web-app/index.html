@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KrishiEaze - Connecting Farmers to Consumers</title>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
     
@@ -15,69 +12,27 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind Config -->
+<!--  <script type="importmap">-->
+<!--{-->
+<!--  "imports": {-->
+<!--    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",-->
+<!--    "react/": "https://esm.sh/react@^19.2.4/",-->
+<!--    "react": "https://esm.sh/react@^19.2.4"-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="src/index.css">
     <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              primary: "#387F39", 
-              "primary-hover": "#2f6036",
-              secondary: "#F28C28", 
-              "background-light": "#F9F8F0", 
-              "background-dark": "#111827", 
-              "card-light": "#FFFFFF",
-              "card-dark": "#1F2937", 
-              "text-light": "#2D3748",
-              "text-dark": "#F3F4F6", 
-              "surface-dark": "#1E1E1E",
-              "surface-dark-2": "#252525",
-            },
-            fontFamily: {
-              sans: ["Poppins", "Inter", "sans-serif"],
-              serif: ["Merriweather", "serif"],
-            },
-            borderRadius: {
-              DEFAULT: "0.5rem",
-              xl: "1rem",
-              '2xl': "1.25rem",
-            },
-          },
-        },
-      };
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     </script>
-    <style>
-      body {
-        font-family: 'Poppins', sans-serif;
-      }
-      .glass-effect {
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
     <div id="root"></div>
-  <script type="module" src="/index.jsx"></script>
+  <script type="module" src="./src/index.jsx"></script>
 </body>
 </html>

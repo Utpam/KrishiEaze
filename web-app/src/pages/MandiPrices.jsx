@@ -1,24 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import axios from 'axios';
 
 const MandiPrices = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedState, setSelectedState] = useState('All');
+    const [prices, setPrices] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const prices = [
-        { crop: 'Wheat', variety: 'Lokwan', price: '₹2,450/Qtl', change: '+2.5%', market: 'Nagpur Mandi', date: 'Today' },
-        { crop: 'Rice', variety: 'Basmati', price: '₹4,100/Qtl', change: '-1.2%', market: 'Gondia Mandi', date: 'Today' },
-        { crop: 'Cotton', variety: 'H-4', price: '₹7,800/Qtl', change: '+0.8%', market: 'Wardha Mandi', date: 'Yield' },
-        { crop: 'Soybean', variety: 'Yellow', price: '₹4,800/Qtl', change: '+1.5%', market: 'Amravati Mandi', date: 'Yesterday' },
-        { crop: 'Onion', variety: 'Red', price: '₹1,200/Qtl', change: '-5.0%', market: 'Nashik Mandi', date: 'Today' },
-        { crop: 'Potato', variety: 'Local', price: '₹950/Qtl', change: '+0.5%', market: 'Nagpur Mandi', date: 'Today' },
-    ];
+    useEffect(() => {
+        const fetchPrices = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/api/mandi-prices');
+                if (res.data.success) {
+                    // Adapt the backend schema names to the existing frontend layout
+                    const formattedData = res.data.data.map(p => ({
+                        crop: p.crop_name,
+                        variety: 'Standard',
+                        price: `₹${p.price}/${p.unit.includes('quintal') ? 'Qtl' : 'Unit'}`,
+                        change: '+0.0%',
+                        market: p.location,
+                        date: new Date(p.date).toLocaleDateString(),
+                        state: 'India'
+                    }));
+                    setPrices(formattedData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch mandi prices", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const filteredPrices = prices.filter(item =>
-        item.crop.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.market.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        fetchPrices();
+    }, []);
+
+    const filteredPrices = prices.filter(item => {
+        const matchesSearch = item.crop.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                              item.market.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesState = selectedState === 'All' || item.state === selectedState;
+        return matchesSearch && matchesState;
+    });
 
     return (
         <div className="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark transition-colors duration-300">
