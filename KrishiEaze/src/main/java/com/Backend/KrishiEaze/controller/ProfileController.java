@@ -41,8 +41,8 @@ public class ProfileController {
         user.setState(dto.getState());
         user.setAddress(dto.getAddress());
         user.setPinCode(dto.getPinCode());
-        user.setLat(dto.getLat());
-        user.setLng(dto.getLng());
+//        user.setLat(dto.getLat());
+//        user.setLng(dto.getLng());
 
         // 2. Convert String Role names to Database Role Entities
         if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {

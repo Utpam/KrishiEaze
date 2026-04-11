@@ -29,8 +29,8 @@ public class ProfileService {
         user.setDistrict(profileRequestDto.getDistrict());
         user.setState(profileRequestDto.getState());
         user.setPinCode(profileRequestDto.getPinCode());
-        user.setLat(profileRequestDto.getLat());
-        user.setLng(profileRequestDto.getLng());
+//        user.setLat(profileRequestDto.getLat());
+//        user.setLng(profileRequestDto.getLng());
         user.setProfileCompleted(true);
         userRepository.save(user);
 
@@ -59,10 +59,10 @@ public class ProfileService {
         if(profileRequestDto.getPinCode() != null) {
             existingUser.setPinCode(profileRequestDto.getPinCode());
         }
-        if(profileRequestDto.getLat() !=null && profileRequestDto.getLng() != null){
-            existingUser.setLat(profileRequestDto.getLat());
-            existingUser.setLng(profileRequestDto.getLng());
-        }
+//        if(profileRequestDto.getLat() !=null && profileRequestDto.getLng() != null){
+//            existingUser.setLat(profileRequestDto.getLat());
+//            existingUser.setLng(profileRequestDto.getLng());
+//        }
         if (existingUser.getFirstName() != null && existingUser.getDistrict() != null) {
             existingUser.setProfileCompleted(true);
         }

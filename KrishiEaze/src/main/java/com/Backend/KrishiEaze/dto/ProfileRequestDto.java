@@ -36,6 +36,6 @@ public class ProfileRequestDto {
     @Pattern(regexp = "^\\d{6}$", message = "Pincode must be exactly 6 digits")
     private String pinCode;
     private Set<String> roles;
-    private Double lat;
-    private Double lng;
+//    private Double lat;
+//    private Double lng;
 }
