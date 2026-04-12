@@ -3,8 +3,11 @@ import ThemeToggle from './ThemeToggle';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../auth/authSlice';
 import Logo_No_text from '../../Public/Logo_No_text.png';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+    const { t } = useTranslation();
     const { isAuthenticated, user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -25,16 +28,17 @@ const Navbar = () => {
                         <span className="material-icons text-primary text-4xl">
                             <img src={Logo_No_text} className='w-[4rem]' />
                         </span>
-                        <span className="font-bold text-2xl tracking-tight text-primary dark:text-green-400">Krishiaze</span>
+                        <span className="font-bold text-2xl tracking-tight text-primary dark:text-green-600">Krishiaze</span>
                     </Link>}
 
                     <div className="hidden md:flex space-x-8 items-center">
-                        <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Home</Link>
-                        <Link to="/mandi" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Mandi Prices</Link>
-                        <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Dashboard</Link>
+                        <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">{t('nav.home')}</Link>
+                        <Link to="/mandi" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">{t('nav.mandi_prices')}</Link>
+                        <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">{t('nav.dashboard')}</Link>
                     </div>
 
                     <div className="flex items-center space-x-4">
+                        <LanguageSwitcher />
                         <ThemeToggle />
                         {!isAuthenticated ? (
                             <>
@@ -42,22 +46,22 @@ const Navbar = () => {
                                     to="/login"
                                     className="hidden md:inline-flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium rounded-full text-primary bg-white border-primary hover:bg-green-50 dark:bg-transparent dark:text-white dark:border-white dark:hover:bg-white/10 transition shadow-sm"
                                 >
-                                    Login
+                                    {t('nav.login')}
                                 </Link>
                                 <Link
                                     to="/signup"
                                     className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-green-700 dark:bg-primary dark:hover:bg-green-600 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
                                 >
-                                    Sign Up
+                                    {t('nav.signup')}
                                 </Link>
                             </>
                         ) : (
                             <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden sm:block">Hi, {user?.name?.split(' ')[0]}</span>
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden sm:block">{t('nav.greeting')}, {user?.name?.split(' ')[0]}</span>
                                 <button
                                     onClick={handleLogout}
                                     className="text-gray-500 hover:text-red-500 transition"
-                                    title="Logout"
+                                    title={t('nav.logout')}
                                 >
                                     <span className="material-icons">logout</span>
                                 </button>

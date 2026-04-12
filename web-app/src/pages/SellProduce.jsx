@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import axios from 'axios';
 
 const SellProduce = () => {
     const [formData, setFormData] = useState({
@@ -19,10 +20,40 @@ const SellProduce = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Submitting Listing:", formData);
-        alert("Listing created successfully!");
+        
+        if (!formData.cropName || !formData.quantity || !formData.expectedPrice) {
+            alert("Missing required fields (crop, quantity, or price)");
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('krishieaze_token');
+            const payload = {
+                name: formData.cropName,
+                price: parseFloat(formData.expectedPrice),
+                quantity: `${formData.quantity} ${formData.unit}`,
+                description: `${formData.variety ? `Variety: ${formData.variety}. ` : ''}${formData.harvestDate ? `Harvest: ${formData.harvestDate}.` : ''}`
+            };
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            const res = await axios.post('http://localhost:5000/api/crops', payload, config);
+            if (res.data.success) {
+                alert("Listing created successfully!");
+                setFormData({
+                    cropName: '', variety: '', quantity: '', unit: 'Quintal', expectedPrice: '', harvestDate: '', description: '', images: []
+                });
+            }
+        } catch (error) {
+            console.error('Failed to create listing:', error.response?.data?.error || error.message);
+            alert("Failed to create listing. Make sure you are logged in as a Farmer.");
+        }
     };
 
     return (

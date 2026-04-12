@@ -35,6 +35,7 @@ public class AuthService {
 
         // Save to your specialized OtpService (which likely handles expiry)
         otpService.saveOtp(mobileNo, otp);
+        System.out.println("<<<< DEVELOPMENT ONLY >>>> OTP for " + mobileNo + " is: " + otp);
 
         SignupResponseDto response = new SignupResponseDto();
         response.setMobileNo(mobileNo);
