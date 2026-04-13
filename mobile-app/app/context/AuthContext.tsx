@@ -40,8 +40,9 @@ type AuthContextType = {
   user: UserData | null;
   accessToken: string | null;
   isLoading: boolean;
-  loginSession: (token: string, userData: UserData) => Promise<void>;
+  loginSession: (token: string, refreshToken: string, userData: UserData) => Promise<void>;
   updateUserContext: (data: Partial<UserData>) => Promise<void>;
+  refreshAuthTokens: () => Promise<boolean>;
   logout: () => Promise<void>;
 };
 
@@ -99,10 +100,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, accessToken, segments, isLoading]);
 
-  const loginSession = async (token: string, userData: UserData) => {
+  const loginSession = async (token: string, refreshToken: string, userData: UserData) => {
     setAccessToken(token);
     setUser(userData);
     await safeSetItem('accessToken', token);
+    await safeSetItem('refreshToken', refreshToken);
     await safeSetItem('userData', JSON.stringify(userData));
   };
 
@@ -110,6 +112,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updatedUser = { ...user, ...data };
     setUser(updatedUser);
     await safeSetItem('userData', JSON.stringify(updatedUser));
+  };
+
+  const refreshAuthTokens = async (): Promise<boolean> => {
+    try {
+      const storedRefreshToken = await safeGetItem('refreshToken');
+      if (!storedRefreshToken) {
+         await logout();
+         return false;
+      }
+      
+      const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || (require('react-native').Platform.OS === 'android' ? 'http://10.0.2.2:8080' : 'http://localhost:8080');
+      
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${storedRefreshToken}` }
+      });
+      
+      if (!response.ok) {
+        await logout();
+        return false;
+      }
+      
+      const parsedRes = await response.json();
+      if (parsedRes?.tokenResponse) {
+        const newAccess = parsedRes.tokenResponse.accessToken;
+        const newRefresh = parsedRes.tokenResponse.refreshToken;
+        setAccessToken(newAccess);
+        await safeSetItem('accessToken', newAccess);
+        await safeSetItem('refreshToken', newRefresh);
+        return true;
+      }
+      return false;
+    } catch(e) {
+      return false;
+    }
   };
 
   const logout = async () => {
@@ -122,7 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, isLoading, loginSession, updateUserContext, logout }}>
+    <AuthContext.Provider value={{ user, accessToken, isLoading, loginSession, updateUserContext, refreshAuthTokens, logout }}>
       {children}
     </AuthContext.Provider>
   );

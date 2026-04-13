@@ -13,13 +13,11 @@ export default function RegisterScreen() {
   const [form, setForm] = useState({
     firstName: '',
     middleName: '',
-    surname: '',
-    village: '',
+    surName: '',
+    address: '',
     district: '',
     state: '',
-    pincode: '',
-    lat: 18.5204,
-    lng: 73.8567
+    pinCode: '',
   });
 
   const handleChange = (key: string, value: string) => {
@@ -27,20 +25,29 @@ export default function RegisterScreen() {
   };
 
   const submitProfile = async () => {
-    if (!form.firstName || !form.surname || !form.village) {
-      alert("Please fill required fields: First Name, Surname, and Village.");
+    if (!form.firstName || !form.surName || !form.address) {
+      alert("Please fill required fields: First Name, Surname, and Address.");
       return;
     }
     setLoading(true);
     try {
-      const parsedRes: any = await updateProfileRequest(accessToken!, form);
-      if (parsedRes.success && parsedRes.data) {
-        await updateUserContext({ profileCompleted: parsedRes.data.profileCompleted });
-        // After profile is marked complete, redirect to Home layout
-        router.replace('/(tabs)');
-      }
-    } catch (e) {
-      alert("Failed to update profile.");
+      const payload = {
+        ...form,
+        roles: ["FARMER"]
+      };
+      
+      const parsedRes: any = await updateProfileRequest(accessToken!, payload);
+      // Backend returns standard response structure usually or just parses it.
+      // E.g., if response is standard, we check parsedRes properties to confirm it passed, 
+      // but if the API doesn't throw ApiError it means 200 OK. Let's assume on success we proceed.
+      // The old mock code checked `parsedRes.success && parsedRes.data`.
+      // Real backend likely returns the updated profile object or standard response.
+      // If we got here with no errors thrown by apiClient, we assume success.
+      await updateUserContext({ profileCompleted: true });
+      router.replace('/(tabs)');
+      
+    } catch (error: any) {
+      alert(error?.message || "Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -60,17 +67,17 @@ export default function RegisterScreen() {
 
             <TextInput style={styles.input} placeholder="First Name *" value={form.firstName} onChangeText={(v) => handleChange('firstName', v)} />
             <TextInput style={styles.input} placeholder="Middle Name" value={form.middleName} onChangeText={(v) => handleChange('middleName', v)} />
-            <TextInput style={styles.input} placeholder="Surname *" value={form.surname} onChangeText={(v) => handleChange('surname', v)} />
+            <TextInput style={styles.input} placeholder="Surname *" value={form.surName} onChangeText={(v) => handleChange('surName', v)} />
 
             <View style={styles.divider} />
             <Text style={styles.sectionHeader}>Location Information</Text>
 
-            <TextInput style={styles.input} placeholder="Village / City *" value={form.village} onChangeText={(v) => handleChange('village', v)} />
+            <TextInput style={styles.input} placeholder="Address Line *" value={form.address} onChangeText={(v) => handleChange('address', v)} />
             <TextInput style={styles.input} placeholder="District" value={form.district} onChangeText={(v) => handleChange('district', v)} />
 
             <View style={styles.row}>
               <TextInput style={[styles.input, { flex: 1, marginRight: 10 }]} placeholder="State" value={form.state} onChangeText={(v) => handleChange('state', v)} />
-              <TextInput style={[styles.input, { flex: 1 }]} placeholder="Pincode" keyboardType="number-pad" value={form.pincode} onChangeText={(v) => handleChange('pincode', v)} />
+              <TextInput style={[styles.input, { flex: 1 }]} placeholder="Pincode" keyboardType="number-pad" value={form.pinCode} onChangeText={(v) => handleChange('pinCode', v)} />
             </View>
 
             <TouchableOpacity style={styles.button} onPress={submitProfile} disabled={loading}>

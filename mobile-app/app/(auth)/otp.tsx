@@ -20,17 +20,22 @@ export default function OTPScreen() {
     setErrorMsg('');
     try {
       const parsedRes: any = await verifyOtpRequest(mobileNo, otp);
-      if (parsedRes.success && parsedRes.data) {
-        const { accessToken, user } = parsedRes.data;
+      if (parsedRes?.tokenResponse) {
+        const { accessToken, refreshToken } = parsedRes.tokenResponse;
+        
+        const user = {
+          mobileNo: parsedRes.mobileNo,
+          profileCompleted: !parsedRes.newUser,
+          role: 'FARMER' 
+        };
 
-        // Save the authenticated user to global store
-        await loginSession(accessToken, user);
+        // Save the authenticated user and tokens to global store
+        await loginSession(accessToken, refreshToken, user);
 
-        // Navigation will be automatically intercepted and handled by AuthContext
-        // but AuthContext handles replacing to (tabs) or register
+        // Navigation is automatically intercepted by AuthContext
       }
     } catch (error: any) {
-      setErrorMsg(error?.message || "Invalid OTP. Please type '123456' for mock testing.");
+      setErrorMsg(error?.message || "Invalid OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -77,7 +82,7 @@ export default function OTPScreen() {
           <TouchableOpacity
             style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }}
             onPress={async () => {
-              await loginSession('debug_token_home', { profileCompleted: true, role: 'FARMER' });
+              await loginSession('debug_token_home', 'debug_refresh_token', { profileCompleted: true, role: 'FARMER' });
             }}
           >
             <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Skip to Home</Text>

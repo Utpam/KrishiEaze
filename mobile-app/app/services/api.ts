@@ -1,99 +1,119 @@
-// If you establish a real endpoint later, place it here:
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.mockkrishieaze.com';
+import { Platform } from 'react-native';
 
-// Mock mode allows testing UI flows without a real server running
-const MOCK_MODE = true; 
-
-export const sendOtpRequest = async (mobileNo: string, role: string) => {
-  if (MOCK_MODE) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: "OTP sent successfully",
-          data: {
-            mobileNo: mobileNo,
-            otpExpirySeconds: 300,
-            nextStep: "VERIFY_OTP"
-          }
-        });
-      }, 1000);
-    });
+const getBaseUrl = () => {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
   }
+  // Fallback for local development
+  if (Platform.OS === 'android') {
+    return 'http://10.0.2.2:8080';
+  }
+  return 'http://localhost:8080';
+};
 
-  const response = await fetch(`${API_BASE_URL}/auth/signup-request`, {
+const API_BASE_URL = getBaseUrl();
+
+export class ApiError extends Error {
+  public status: number;
+  public data: any;
+  constructor(message: string, status: number, data?: any) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.data = data;
+  }
+}
+
+const apiClient = async (endpoint: string, options: RequestInit = {}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (err) {
+        throw new ApiError(`HTTP Error ${response.status}`, response.status);
+      }
+      
+      const errMsg = errorData?.message || `HTTP Error ${response.status}`;
+      throw new ApiError(errMsg, response.status, errorData);
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.indexOf('application/json') !== -1) {
+      return await response.json();
+    } else {
+      return await response.text(); 
+    }
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    
+    // Check for network errors natively thrown by fetch
+    if (error.name === 'TypeError' && error.message === 'Network request failed') {
+        throw new ApiError("Unable to connect to the server. Please check your internet connection or ensure the backend is running.", 0);
+    }
+
+    throw new ApiError(error.message || 'An unexpected error occurred', 0);
+  }
+};
+
+export const sendOtpRequest = async (mobileNo: string, role: string = 'FARMER') => {
+  return apiClient('/auth/signup-request', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ mobileNo, role }),
   });
-  return response.json();
 };
 
 export const verifyOtpRequest = async (mobileNo: string, otp: string) => {
-  if (MOCK_MODE) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (otp === "123456") {
-          resolve({
-            success: true,
-            message: "OTP verified",
-            data: {
-              isNewUser: true, // Simulating a new user to test the Register flow
-              accessToken: "mock_access_token_" + Date.now(),
-              refreshToken: "mock_refresh_token",
-              user: {
-                id: "usr_101",
-                mobileNo: mobileNo,
-                role: "FARMER",
-                profileCompleted: false
-              }
-            }
-          });
-        } else {
-          reject({
-            success: false,
-            message: "Invalid OTP",
-            error: { code: "OTP_INVALID", status: 401 }
-          });
-        }
-      }, 1000);
-    });
-  }
-
-  const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+  return apiClient('/auth/verify-otp', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ mobileNo, otp }),
   });
-  if (!response.ok) {
-    throw await response.json();
-  }
-  return response.json();
+};
+
+export const refreshTokenRequest = async (refreshToken: string) => {
+  return apiClient('/auth/refresh', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${refreshToken}`
+    }
+  });
 };
 
 export const updateProfileRequest = async (token: string, profileData: any) => {
-  if (MOCK_MODE) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: "Farmer profile created",
-          data: {
-            profileCompleted: true,
-            role: "FARMER"
-          }
-        });
-      }, 1000);
-    });
-  }
-
-  const response = await fetch(`${API_BASE_URL}/api/v1/profile/update`, {
+  return apiClient('/api/v1/profile/update', {
     method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
+    headers: {
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify(profileData),
   });
-  return response.json();
+};
+
+export const getMyProfileRequest = async (token: string) => {
+  return apiClient('/api/v1/profile/me', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};
+
+export const updateLocationRequest = async (token: string, lat: number, lng: number) => {
+  return apiClient('/api/v1/location/update-location', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ lat, lng }),
+  });
 };
