@@ -1,12 +1,13 @@
-import { Tabs } from "expo-router";
-import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Tabs, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const router = useRouter();
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F5F7F5" }}>
@@ -80,9 +81,12 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-      
+
       {/* Floating Action Button */}
-      <TouchableOpacity style={[styles.fab, { bottom: 95 + insets.bottom }]}>
+      <TouchableOpacity 
+        style={[styles.fab, { bottom: 95 + insets.bottom }]}
+        onPress={() => router.push('/create-listing')}
+      >
         <MaterialIcons name="add" size={30} color="white" />
       </TouchableOpacity>
     </View>
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 64,
     width: 70,
-    marginTop: 10,
+    marginTop: 25,
   },
   tabItemFocused: {
     backgroundColor: "#085836",

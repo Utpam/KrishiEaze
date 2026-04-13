@@ -7,37 +7,35 @@ import mr from './locales/mr.json';
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
+// In-memory fallback
+const memoryStore: Record<string, string> = {};
+
 const languageDetectorPlugin = {
   type: 'languageDetector',
   async: true,
   init: () => {},
   detect: async function (callback: (lang: string) => void) {
     try {
-      // get stored language from Async storage
-      // if it's empty, return 'en'
-      await AsyncStorage.getItem(STORE_LANGUAGE_KEY).then((language) => {
-        if (language) {
-          // if language is stored
-          return callback(language);
-        } else {
-          // if not, return english
-          return callback('en');
-        }
-      });
+      const language = await AsyncStorage.getItem(STORE_LANGUAGE_KEY);
+      if (language) {
+        return callback(language);
+      } else {
+        return callback('en');
+      }
     } catch (error) {
-      console.log('Error reading language', error);
-      return callback('en');
+      const fallbackLang = memoryStore[STORE_LANGUAGE_KEY] || 'en';
+      return callback(fallbackLang);
     }
   },
   cacheUserLanguage: async function (language: string) {
     try {
-      // save a user's language choice in Async storage
       await AsyncStorage.setItem(STORE_LANGUAGE_KEY, language);
     } catch (error) {
-      console.log('Error caching language', error);
+      memoryStore[STORE_LANGUAGE_KEY] = language;
     }
   },
 };
+
 
 const resources = {
   en: {

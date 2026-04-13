@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import TransactionTable from '../components/TransactionTable';
 import OrderRequestCard from '../components/OrderRequestCard';
+import MobileBottomNav from '../components/MobileBottomNav';
 import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
@@ -18,21 +19,21 @@ const Dashboard = () => {
             <main className="flex-1 overflow-y-auto flex flex-col relative w-full">
                 <Navbar />
 
-                <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full">
+                <div className="p-4 md:p-8 space-y-6 md:space-y-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
                     {/* Welcome Section */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-1">Welcome back, <span className="text-primary font-semibold">{user?.name || 'Farmer'}</span>! Here's what's happening today.</p>
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
+                            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-1">Welcome back, <span className="text-primary font-semibold">{user?.name || 'Farmer'}</span>! Here's what's happening today.</p>
                         </div>
-                        <button className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium">
+                        <button className="flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium w-full md:w-auto">
                             <span className="material-icons">add_circle</span>
                             <span>New Listing</span>
                         </button>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <StatCard
                             title="Total Sales"
                             value="₹1,24,500"
@@ -71,9 +72,9 @@ const Dashboard = () => {
                         />
                     </div>
 
-                    <div className="grid lg:grid-cols-3 gap-8">
+                    <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
                         {/* Recent Transactions */}
-                        <div className="lg:col-span-2">
+                        <div className="lg:col-span-2 overflow-x-auto">
                             <TransactionTable />
                         </div>
 
@@ -90,8 +91,8 @@ const Dashboard = () => {
                                         </div>
                                         <span className="material-icons text-4xl text-yellow-300 animate-spin-slow">wb_sunny</span>
                                     </div>
-                                    <div className="text-4xl font-bold mb-2">32°C</div>
-                                    <p className="text-blue-100 mb-4">Sunny with clear skies. Perfect for harvesting.</p>
+                                    <div className="text-3xl md:text-4xl font-bold mb-2">32°C</div>
+                                    <p className="text-blue-100 mb-4 text-sm md:text-base">Sunny with clear skies. Perfect for harvesting.</p>
                                     <div className="flex gap-4 text-sm font-medium text-blue-100">
                                         <span className="flex items-center gap-1"><span className="material-icons text-sm">water_drop</span> 12%</span>
                                         <span className="flex items-center gap-1"><span className="material-icons text-sm">air</span> 8 km/h</span>
@@ -105,6 +106,9 @@ const Dashboard = () => {
                     </div>
                 </div>
             </main>
+            
+            {/* Mobile Bottom Navigation */}
+            <MobileBottomNav />
         </div>
     );
 };

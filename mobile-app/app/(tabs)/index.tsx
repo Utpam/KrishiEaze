@@ -1,8 +1,8 @@
+import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
@@ -14,29 +14,29 @@ export default function HomeScreen() {
   };
 
   const currentLangLabel = () => {
-    if(i18n.language === 'en') return 'Eng';
-    if(i18n.language === 'hi') return 'हिंदी';
-    if(i18n.language === 'mr') return 'मराठी';
+    if (i18n.language === 'en') return 'Eng';
+    if (i18n.language === 'hi') return 'हिंदी';
+    if (i18n.language === 'mr') return 'मराठी';
     return 'Eng';
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      
+
       {/* Language Selection Modal */}
       <Modal visible={langModalVisible} transparent={true} animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Choose Language</Text>
-            
+
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('en')}>
               <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>English</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('hi')}>
               <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>हिंदी</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('mr')}>
               <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>मराठी</Text>
             </TouchableOpacity>
@@ -49,7 +49,7 @@ export default function HomeScreen() {
       </Modal>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        
+
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity>
@@ -58,7 +58,7 @@ export default function HomeScreen() {
           <Text style={styles.logoText}>{t('common.krishieaze')}</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langButton}>
-              <MaterialIcons name="language" size={16} color="#085836" style={{marginRight: 4}} />
+              <MaterialIcons name="language" size={16} color="#085836" style={{ marginRight: 4 }} />
               <Text style={styles.langText}>{currentLangLabel()}</Text>
             </TouchableOpacity>
             <TouchableOpacity>
@@ -70,9 +70,9 @@ export default function HomeScreen() {
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <View style={styles.avatarContainer}>
-            <Image 
-              source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
-              style={styles.avatar} 
+            <Image
+              source={{ uri: 'https://media.istockphoto.com/id/939194718/photo/old-age-indian-man-portrait-at-outdoor.jpg?s=612x612&w=0&k=20&c=874l6agIVEXT22fjC6LfdFpjf6J_AZjH-XtRRsAWIao=' }}
+              style={styles.avatar}
             />
           </View>
           <View style={styles.welcomeTextContainer}>
@@ -91,11 +91,11 @@ export default function HomeScreen() {
             <Text style={styles.earningsAmount}>₹42,850</Text>
             <Text style={styles.earningsSubtitle}>{t('home.thisMonth')}</Text>
           </View>
-          <MaterialCommunityIcons 
-            name="cash" 
-            size={120} 
-            color="rgba(255,255,255,0.08)" 
-            style={styles.earningsBgIcon} 
+          <MaterialCommunityIcons
+            name="cash"
+            size={120}
+            color="rgba(255,255,255,0.08)"
+            style={styles.earningsBgIcon}
           />
         </View>
 
@@ -120,9 +120,9 @@ export default function HomeScreen() {
             <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.mandiScroll}
         >
           <View style={styles.mandiCard}>
@@ -156,7 +156,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>{t('home.recentTransactions')}</Text>
         </View>
         <View style={styles.transactionsContainer}>
-          
+
           <View style={styles.transactionItem}>
             <View style={[styles.txIconContainer, { backgroundColor: '#E8F5E9' }]}>
               <FontAwesome5 name="shopping-cart" size={16} color="#085836" />
@@ -206,7 +206,7 @@ export default function HomeScreen() {
           </View>
 
         </View>
-        
+
         {/* Extra padding to prevent the FAB/Tabs from covering content */}
         <View style={{ height: 40 }} />
       </ScrollView>

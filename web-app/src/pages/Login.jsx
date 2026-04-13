@@ -26,24 +26,24 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center px-4 transition-colors duration-200">
-            <div className="max-w-md w-full bg-white dark:bg-card-dark rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                <div className="p-8">
-                    <div className="text-center mb-8">
-                        <span className="material-icons text-primary text-5xl mb-2">agriculture</span>
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">Sign in to access your dashboard</p>
+        <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center px-4 py-8 transition-colors duration-200">
+            <div className="max-w-md w-full bg-white dark:bg-card-dark rounded-xl md:rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                <div className="p-6 md:p-8">
+                    <div className="text-center mb-6 md:mb-8">
+                        <span className="material-icons text-primary text-4xl md:text-5xl mb-2">agriculture</span>
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
+                        <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-2">Sign in to access your dashboard</p>
                     </div>
 
-                    {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
+                    {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-xs md:text-sm">{error}</div>}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email or Phone</label>
+                            <label className="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email or Phone</label>
                             <input
                                 type="text"
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all text-sm md:text-base"
                                 placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -51,11 +51,11 @@ const Login = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                            <label className="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
                             <input
                                 type="password"
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all text-sm md:text-base"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -65,13 +65,13 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-primary hover:bg-green-700 text-white font-bold py-2.5 md:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                         >
                             {loading ? 'Signing in...' : 'Sign In'}
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                    <div className="mt-6 text-center text-xs md:text-sm text-gray-500 dark:text-gray-400">
                         Don't have an account?{' '}
                         <button onClick={() => navigate('/signup')} className="text-primary font-bold hover:underline">
                             Create Account
