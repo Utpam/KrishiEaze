@@ -197,6 +197,46 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Mandi",
+      "item": [
+        {
+          "name": "Get Nearest Mandis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/mandi/nearest?crop={{crop}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "mandi",
+                "nearest"
+              ],
+              "query": [
+                {
+                  "key": "crop",
+                  "value": "{{crop}}",
+                  "description": "Crop name entered by farmer (e.g. Wheat, Tomato, Onion)"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
