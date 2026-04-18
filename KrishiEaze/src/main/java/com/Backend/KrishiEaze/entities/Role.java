@@ -1,22 +1,25 @@
 package com.Backend.KrishiEaze.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Table(name = "roles")
 @Getter
 @Setter
-@Table(name = "user_roles")
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder // Added for consistency with your User entity
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID rolesId = UUID.randomUUID();
+    @JsonIgnore
+    private UUID rolesId;
+
+    @Column(unique = true, nullable = false)
     private String name;
 }

@@ -1,11 +1,24 @@
 package com.Backend.KrishiEaze.config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
 public class ProjectConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
+
+//    @Bean
+//    public RestTemplate restTemplate() {
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory();
+//        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+//        restTemplate.setUriTemplateHandler(factory);
+//        return restTemplate;
+//    }
 }
