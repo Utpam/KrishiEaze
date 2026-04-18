@@ -76,9 +76,9 @@ const Navbar = () => {
                                 >
                                     <span className="material-icons">logout</span>
                                 </button>
-                                <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border-2 border-primary/20 text-sm md:text-base">
+                                <Link to="/profile" className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border-2 border-primary/20 text-sm md:text-base hover:bg-primary hover:text-white transition cursor-pointer">
                                     {user?.name?.charAt(0) || 'U'}
-                                </div>
+                                </Link>
                             </div>
                         )}
                     </div>
