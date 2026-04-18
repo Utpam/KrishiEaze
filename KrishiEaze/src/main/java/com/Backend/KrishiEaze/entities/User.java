@@ -61,9 +61,11 @@ public class User implements UserDetails {
     private String pinCode;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(
+            name = "user_role_mapping", // Use a unique name for the link table
+            joinColumns = @JoinColumn(name = "user_id"), // Points to User.id
+            inverseJoinColumns = @JoinColumn(name = "role_id") // Points to Role.rolesId
+    )
     private Set<Role> roles = new HashSet<>();
     private Double lat;
     private Double lng;
@@ -73,7 +75,9 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return this.roles.stream()
+                .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority(role.getName()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

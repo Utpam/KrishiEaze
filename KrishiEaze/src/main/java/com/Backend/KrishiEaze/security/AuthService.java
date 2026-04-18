@@ -1,15 +1,20 @@
 package com.Backend.KrishiEaze.security;
 
 import com.Backend.KrishiEaze.dto.*;
+import com.Backend.KrishiEaze.entities.Role;
 import com.Backend.KrishiEaze.entities.User;
+import com.Backend.KrishiEaze.repositories.RoleRepository;
 import com.Backend.KrishiEaze.repositories.UserRepository;
 import com.Backend.KrishiEaze.services.OtpService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -20,6 +25,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final OtpService otpService;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     /**
      * Phase 1: OTP Generation
@@ -44,6 +50,24 @@ public class AuthService {
         return response;
     }
 
+    @Transactional
+    public User handleNewUser(String mobileNo) {
+        // 1. Fetch the 'FARMER' role
+        Role farmerRole = roleRepository.findByName("ROLE_FARMER")
+                .orElseThrow(() -> new RuntimeException("ROLE_FARMER not found in DB. Did you run data.sql?"));
+
+        // 2. Create the user object
+        User newUser = User.builder()
+                .mobileNo(mobileNo)
+                .username(mobileNo)
+                .roles(new HashSet<>(Set.of(farmerRole))) // Assign default role
+                .isEnable(true)
+                .profileCompleted(false)
+                .build();
+
+        return userRepository.save(newUser);
+    }
+
     /**
      * Phase 2: OTP Verification & JWT Issuance
      * Uses CustomAuthenticationProvider to verify credentials.
@@ -56,6 +80,11 @@ public class AuthService {
 
         // 2. Extract the Authenticated User entity from the principal
         User authenticatedUser = (User) auth.getPrincipal();
+        if (authenticatedUser.getRoles().isEmpty()) {
+            Role farmerRole = roleRepository.findByName("ROLE_FARMER").orElseThrow(()->new RuntimeException("Role Not Found"));
+            authenticatedUser.getRoles().add(farmerRole);
+            userRepository.save(authenticatedUser);
+        }
 
         //  Generate a unique ID (jti) for this specific login session
         String jti = UUID.randomUUID().toString();
