@@ -54,7 +54,14 @@ export const locationAPI = {
     updateLocation: (data) => apiClient.post('/api/v1/location/update-location', data),
 };
 
-// Mandi Endpoints
+// Mandi & Sell Request Endpoints
 export const mandiAPI = {
     getNearestMandis: (cropName) => apiClient.get(`/api/v1/mandi/nearest?crop=${cropName}`),
+    createSellRequest: (data) => apiClient.post('/api/v1/mandi/sell-request', data),
+    getMySellRequests: () => apiClient.get('/api/v1/mandi/sell-request/my-requests'),
+};
+
+// Transport Endpoints
+export const transportAPI = {
+    calculateTransport: (data) => apiClient.post('/api/v1/transport/calculate', data),
 };
