@@ -18,8 +18,8 @@ export default function LoginScreen() {
       await sendOtpRequest(mobileNo, 'FARMER');
       // Forward the phone number to the OTP screen via query params
       router.push({ pathname: '/(auth)/otp', params: { mobileNo } });
-    } catch (error) {
-      alert("Failed to send OTP. Please try again.");
+    } catch (error: any) {
+      alert(error?.message || "Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function LoginScreen() {
           <TouchableOpacity 
             style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }} 
             onPress={async () => {
-              await loginSession('debug_token_home', { profileCompleted: true, role: 'FARMER' });
+              await loginSession('debug_token_home', 'debug_refresh_token', { profileCompleted: true, role: 'FARMER' });
             }}
           >
             <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Go to Home</Text>
@@ -68,7 +68,7 @@ export default function LoginScreen() {
           <TouchableOpacity 
             style={{ marginTop: 10, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }} 
             onPress={async () => {
-              await loginSession('debug_token_register', { profileCompleted: false, role: 'FARMER' });
+              await loginSession('debug_token_register', 'debug_refresh_token', { profileCompleted: false, role: 'FARMER' });
             }}
           >
             <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Go to Register</Text>

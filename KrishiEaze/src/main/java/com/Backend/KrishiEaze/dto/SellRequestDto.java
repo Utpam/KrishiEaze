@@ -12,6 +12,6 @@ public class SellRequestDto {
     private Double expectedPricePerUnit;
     private java.time.LocalDate harvestDate;
     private String qualityGrade;
-    private Double lat; // Farmer's current GPS
-    private Double lng; // Farmer's current GPS
+//    private Double lat; // Farmer's current GPS
+//    private Double lng; // Farmer's current GPS
 }

@@ -43,6 +43,13 @@ const Sidebar = () => {
                     <span className="material-icons-outlined">trending_up</span>
                     <span className="font-medium">Mandi Prices</span>
                 </NavLink>
+                <NavLink
+                    to="/profile"
+                    className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-primary text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-surface-dark-2'}`}
+                >
+                    <span className="material-icons-outlined">person</span>
+                    <span className="font-medium">My Profile</span>
+                </NavLink>
             </nav>
             <div className="p-4 border-t border-gray-200 dark:border-gray-800">
                 <NavLink to="/" className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all mt-1">

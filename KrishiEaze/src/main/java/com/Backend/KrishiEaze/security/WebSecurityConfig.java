@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,6 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class WebSecurityConfig {
     @Autowired
     private CustomAuthenticationProvider customAuthProvider;
@@ -30,7 +33,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Allow OTP and Login endpoints
                          .requestMatchers("/api/profile/**").authenticated()
-                .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/mandi/sell-request").hasRole("FARMER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/mandi/sell-request/my-requests").hasRole("FARMER")
+
+                        .anyRequest().authenticated()
         )
                 .exceptionHandling(ex-> ex.authenticationEntryPoint((request, response, authException) -> {
                     //authException.printStackTrace();

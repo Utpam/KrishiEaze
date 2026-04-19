@@ -17,6 +17,7 @@ public class MandiResponseDto {
     private String commodity;
     private String modalPrice;
     private String priceUnit = "₹/quintal";
+  //  private String marketStatus; // ✅ new field
     private Double distanceKm;
     private Double lat;
     private Double lng;

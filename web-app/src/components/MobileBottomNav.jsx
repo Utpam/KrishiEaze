@@ -35,6 +35,13 @@ const MobileBottomNav = () => {
                 <span className="material-icons-outlined text-xl mb-0.5">trending_up</span>
                 <span className="text-[10px] font-medium">Prices</span>
             </NavLink>
+            <NavLink
+                to="/profile"
+                className={({ isActive }) => `flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-primary' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}`}
+            >
+                <span className="material-icons-outlined text-xl mb-0.5">person</span>
+                <span className="text-[10px] font-medium">Profile</span>
+            </NavLink>
         </div>
     );
 };
