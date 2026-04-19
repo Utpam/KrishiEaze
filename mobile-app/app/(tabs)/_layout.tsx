@@ -82,13 +82,7 @@ export default function TabLayout() {
         />
       </Tabs>
 
-      {/* Floating Action Button */}
-      <TouchableOpacity 
-        style={[styles.fab, { bottom: 95 + insets.bottom }]}
-        onPress={() => router.push('/create-listing')}
-      >
-        <MaterialIcons name="add" size={30} color="white" />
-      </TouchableOpacity>
+
     </View>
   );
 }
@@ -110,19 +104,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 4,
   },
-  fab: {
-    position: "absolute",
-    left: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#9B4C11", // Brownish color for "+ "
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-  },
+
 });

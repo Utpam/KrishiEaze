@@ -33,9 +33,9 @@ export default function RegisterScreen() {
     try {
       const payload = {
         ...form,
-        roles: ["FARMER"]
+        roles: ["ROLE_FARMER"]
       };
-      
+
       const parsedRes: any = await updateProfileRequest(accessToken!, payload);
       // Backend returns standard response structure usually or just parses it.
       // E.g., if response is standard, we check parsedRes properties to confirm it passed, 
@@ -45,7 +45,7 @@ export default function RegisterScreen() {
       // If we got here with no errors thrown by apiClient, we assume success.
       await updateUserContext({ profileCompleted: true });
       router.replace('/(tabs)');
-      
+
     } catch (error: any) {
       alert(error?.message || "Failed to update profile. Please try again.");
     } finally {
@@ -85,8 +85,8 @@ export default function RegisterScreen() {
             </TouchableOpacity>
 
             {/* Dev Mode Debug Bypass */}
-            <TouchableOpacity 
-              style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }} 
+            <TouchableOpacity
+              style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }}
               onPress={async () => {
                 await updateUserContext({ profileCompleted: true });
                 router.replace('/(tabs)');

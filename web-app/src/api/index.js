@@ -53,3 +53,8 @@ export const buyerAPI = {
 export const locationAPI = {
     updateLocation: (data) => apiClient.post('/api/v1/location/update-location', data),
 };
+
+// Mandi Endpoints
+export const mandiAPI = {
+    getNearestMandis: (cropName) => apiClient.get(`/api/v1/mandi/nearest?crop=${cropName}`),
+};

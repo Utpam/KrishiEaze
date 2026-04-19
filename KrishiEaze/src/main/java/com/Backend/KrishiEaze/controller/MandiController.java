@@ -7,6 +7,8 @@ import com.Backend.KrishiEaze.entities.User;
 import com.Backend.KrishiEaze.repositories.UserRepository;
 import com.Backend.KrishiEaze.services.MandiService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 @RestController
-@AllArgsConstructor
+// @AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/mandi")
 public class MandiController {
 

@@ -117,3 +117,12 @@ export const updateLocationRequest = async (token: string, lat: number, lng: num
     body: JSON.stringify({ lat, lng }),
   });
 };
+
+export const getNearestMandiRequest = async (token: string, crop: string) => {
+  return apiClient(`/api/v1/mandi/nearest?crop=${encodeURIComponent(crop)}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};

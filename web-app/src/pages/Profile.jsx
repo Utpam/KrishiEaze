@@ -60,6 +60,7 @@ const Profile = () => {
             username,
             email,
             firstName,
+            middleName,
             surName,
             address,
             village,

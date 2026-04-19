@@ -15,7 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+<<<<<<< HEAD
 import tools.jackson.databind.ObjectMapper;
+=======
+
+>>>>>>> 95899b3376ab158f26d9e55296d544b394ab2df4
 import java.util.List;
 
 @Configuration
@@ -56,7 +60,6 @@ public class WebSecurityConfig {
                             "Unauthorized Access!!",
                             message, request.getRequestURI(),
                             true);
-                    var objectMapper = new ObjectMapper();
                     response.getWriter().write(objectMapper.writeValueAsString(apiError));                }))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
