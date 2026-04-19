@@ -1,5 +1,5 @@
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +7,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
   const [langModalVisible, setLangModalVisible] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    let scrollPosition = 0;
+    let direction = 1;
+    const intervalId = setInterval(() => {
+      if (scrollRef.current) {
+        scrollPosition += direction * 0.5; // adjust speed here
+        scrollRef.current.scrollTo({ x: scrollPosition, animated: false });
+        
+        // Reverse direction at edges
+        if (scrollPosition >= 180) {
+          direction = -1;
+        } else if (scrollPosition <= 0) {
+          direction = 1;
+        }
+      }
+    }, 30);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -52,9 +73,9 @@ export default function HomeScreen() {
 
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Feather name="menu" size={26} color="#085836" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Text style={styles.logoText}>{t('common.krishieaze')}</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langButton}>
@@ -121,6 +142,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
         <ScrollView
+          ref={scrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.mandiScroll}
