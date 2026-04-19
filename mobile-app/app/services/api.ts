@@ -145,3 +145,31 @@ export const getMySellRequests = async (token: string) => {
     }
   });
 };
+
+type FuelType = 'DIESEL' | 'PETROL';
+
+type TransportPriceRequest = {
+  mandiId: number;
+  crop: string;
+  quantity: number;
+  fuelPrice: number;
+  mileage: number;
+  fuelType: FuelType;
+};
+
+export type TransportPriceResponse = {
+  costPerQuintal: number;
+  grossRevenue: number;
+  netProfit: number;
+  totalTransportCost: number;
+};
+
+export const calculateTransportPriceRequest = async (token: string, data: TransportPriceRequest) => {
+  return apiClient('/api/v1/transport/calculate', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
+  });
+};

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Alert, RefreshControl } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getMySellRequests } from '../services/api';
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 
 export default function OrdersScreen() {
+  const { t } = useTranslation();
   const { accessToken } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function OrdersScreen() {
       setOrders(data || []);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to fetch orders');
+      Alert.alert(t('common.error'), t('orders.fetchFailed'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -43,12 +45,21 @@ export default function OrdersScreen() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'PENDING': return t('orders.status.pending');
+      case 'APPROVED': return t('orders.status.approved');
+      case 'REJECTED': return t('orders.status.rejected');
+      default: return t('orders.status.unknown');
+    }
+  };
+
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.cropName}>{item.cropName}</Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
-          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>{item.status}</Text>
+          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>{getStatusLabel(item.status)}</Text>
         </View>
       </View>
       
@@ -59,22 +70,22 @@ export default function OrdersScreen() {
 
       <View style={styles.row}>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Quantity</Text>
+          <Text style={styles.detailLabel}>{t('orders.quantity')}</Text>
           <Text style={styles.detailValue}>{item.quantity} {item.unit}</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Expected Price</Text>
+          <Text style={styles.detailLabel}>{t('orders.expectedPrice')}</Text>
           <Text style={styles.detailValue}>₹{item.expectedPricePerUnit}</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Quality</Text>
-          <Text style={styles.detailValue}>Grade {item.qualityGrade}</Text>
+          <Text style={styles.detailLabel}>{t('orders.quality')}</Text>
+          <Text style={styles.detailValue}>{t('orders.grade')} {item.qualityGrade}</Text>
         </View>
       </View>
 
       <View style={styles.footerRow}>
         <Feather name="calendar" size={14} color="#999" />
-        <Text style={styles.dateText}>Requested: {new Date(item.requestDate).toLocaleDateString()}</Text>
+        <Text style={styles.dateText}>{t('orders.requested')}: {new Date(item.requestDate).toLocaleDateString()}</Text>
       </View>
     </View>
   );
@@ -82,7 +93,7 @@ export default function OrdersScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>My Sell Requests</Text>
+        <Text style={styles.title}>{t('orders.title')}</Text>
       </View>
 
       {loading ? (
@@ -90,7 +101,7 @@ export default function OrdersScreen() {
       ) : orders.length === 0 ? (
         <View style={styles.emptyState}>
           <Feather name="inbox" size={48} color="#ccc" />
-          <Text style={styles.emptyText}>No sell requests found</Text>
+          <Text style={styles.emptyText}>{t('orders.empty')}</Text>
         </View>
       ) : (
         <FlatList

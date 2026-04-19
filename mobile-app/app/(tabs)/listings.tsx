@@ -3,11 +3,13 @@ import * as Location from 'expo-location';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { getNearestMandiRequest, updateLocationRequest } from '../services/api';
 
 export default function ListingsScreen() {
+  const { t } = useTranslation();
   const { accessToken } = useAuth();
   const router = useRouter();
   const [crop, setCrop] = useState('');
@@ -20,7 +22,7 @@ export default function ListingsScreen() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        Alert.alert(t('common.permissionDenied'), t('listings.locationPermissionDenied'));
         setUpdatingLocation(false);
         return;
       }
@@ -30,11 +32,17 @@ export default function ListingsScreen() {
       });
       if (accessToken) {
         await updateLocationRequest(accessToken, location.coords.latitude, location.coords.longitude);
-        Alert.alert('Success', `Location synced: Lat ${location.coords.latitude.toFixed(2)}, Lng ${location.coords.longitude.toFixed(2)}`);
+        Alert.alert(
+          t('common.success'),
+          t('listings.locationSynced', {
+            lat: location.coords.latitude.toFixed(2),
+            lng: location.coords.longitude.toFixed(2),
+          })
+        );
       }
     } catch (err) {
       console.error(err);
-      Alert.alert('Error', 'Failed to update location. Please try again.');
+      Alert.alert(t('common.error'), t('listings.locationUpdateFailed'));
     } finally {
       setUpdatingLocation(false);
     }
@@ -42,7 +50,7 @@ export default function ListingsScreen() {
 
   const fetchNearestMandis = async () => {
     if (!crop.trim()) {
-      Alert.alert('Notice', 'Please enter a crop name first');
+      Alert.alert(t('common.notice'), t('listings.enterCropFirst'));
       return;
     }
     if (!accessToken) return;
@@ -53,7 +61,7 @@ export default function ListingsScreen() {
       setMandiList(Array.isArray(response) ? response : []);
     } catch (err) {
       console.error(err);
-      Alert.alert('Error', 'Failed to fetch mandis. Please try again.');
+      Alert.alert(t('common.error'), t('listings.fetchFailed'));
     } finally {
       setLoading(false);
     }
@@ -61,10 +69,9 @@ export default function ListingsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Action Bar */}
       <View style={styles.actionBar}>
         <View style={styles.actionHeader}>
-          <Text style={styles.actionTitle}>Your nearest mandi according to your GPS</Text>
+          <Text style={styles.actionTitle}>{t('listings.nearestMandiTitle')}</Text>
           <TouchableOpacity
             style={styles.locationBtn}
             onPress={handleUpdateLocation}
@@ -81,25 +88,24 @@ export default function ListingsScreen() {
         <View style={styles.searchRow}>
           <TextInput
             style={styles.input}
-            placeholder="Enter crop (e.g. Wheat, Tomato)"
+            placeholder={t('listings.cropPlaceholder')}
             placeholderTextColor="#888"
             value={crop}
             onChangeText={setCrop}
           />
           <TouchableOpacity style={styles.searchBtn} onPress={fetchNearestMandis}>
-            <Text style={styles.searchBtnText}>Find</Text>
+            <Text style={styles.searchBtnText}>{t('common.find')}</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* List */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {loading ? (
           <ActivityIndicator size="large" color="#085836" style={{ marginTop: 40 }} />
         ) : mandiList.length === 0 ? (
           <View style={styles.emptyState}>
             <FontAwesome5 name="store-alt-slash" size={48} color="#ccc" />
-            <Text style={styles.emptyText}>No mandis found. Enter a crop and search.</Text>
+            <Text style={styles.emptyText}>{t('listings.noMandis')}</Text>
           </View>
         ) : (
           mandiList.map((mandi) => (
@@ -129,17 +135,16 @@ export default function ListingsScreen() {
                 </View>
                 <View style={styles.infoRow}>
                   <FontAwesome5 name="box-open" size={14} color="#666" style={{ marginLeft: 1, marginRight: 2 }} />
-                  <Text style={styles.infoText}>Commodity: {mandi.commodity}</Text>
+                  <Text style={styles.infoText}>{t('listings.commodity')}: {mandi.commodity}</Text>
                 </View>
                 <View style={styles.priceContainer}>
-                  <Text style={styles.priceLabel}>Modal Price</Text>
+                  <Text style={styles.priceLabel}>{t('listings.modalPrice')}</Text>
                   <Text style={styles.priceValue}>{mandi.modalPrice}</Text>
                 </View>
               </View>
             </TouchableOpacity>
           ))
         )}
-        {/* Extra padding to prevent the Tabs from covering content */}
         <View style={{ height: 100 }} />
       </ScrollView>
     </SafeAreaView>

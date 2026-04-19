@@ -2,10 +2,12 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { sendOtpRequest } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const { loginSession } = useAuth();
   const [mobileNo, setMobileNo] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,10 +18,9 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await sendOtpRequest(mobileNo, 'FARMER');
-      // Forward the phone number to the OTP screen via query params
       router.push({ pathname: '/(auth)/otp', params: { mobileNo } });
     } catch (error: any) {
-      alert(error?.message || "Failed to send OTP. Please try again.");
+      alert(error?.message || t('login.sendOtpFailed'));
     } finally {
       setLoading(false);
     }
@@ -29,17 +30,17 @@ export default function LoginScreen() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
         <View style={styles.headerContainer}>
-          <Text style={styles.title}>KrishiEaze</Text>
-          <Text style={styles.subtitle}>Enter your mobile number to sign in or register.</Text>
+          <Text style={styles.title}>{t('common.krishieaze')}</Text>
+          <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
         </View>
 
         <View style={styles.formContainer}>
-          <Text style={styles.label}>Mobile Number</Text>
+          <Text style={styles.label}>{t('login.mobileNumber')}</Text>
           <View style={styles.inputContainer}>
             <Text style={styles.prefix}>+91</Text>
             <TextInput
               style={styles.input}
-              placeholder="9876543210"
+              placeholder={t('login.mobilePlaceholder')}
               keyboardType="phone-pad"
               maxLength={10}
               value={mobileNo}
@@ -52,17 +53,16 @@ export default function LoginScreen() {
             onPress={handleSendOTP}
             disabled={mobileNo.length < 10 || loading}
           >
-            {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.buttonText}>Send OTP</Text>}
+            {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.buttonText}>{t('login.sendOtp')}</Text>}
           </TouchableOpacity>
 
-          {/* Dev Mode Debug Bypass */}
           <TouchableOpacity 
             style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }} 
             onPress={async () => {
               await loginSession('debug_token_home', 'debug_refresh_token', { profileCompleted: true, role: 'FARMER' });
             }}
           >
-            <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Go to Home</Text>
+            <Text style={{ color: '#085836', fontWeight: 'bold' }}>{t('login.debugHome')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -71,7 +71,7 @@ export default function LoginScreen() {
               await loginSession('debug_token_register', 'debug_refresh_token', { profileCompleted: false, role: 'FARMER' });
             }}
           >
-            <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Go to Register</Text>
+            <Text style={{ color: '#085836', fontWeight: 'bold' }}>{t('login.debugRegister')}</Text>
           </TouchableOpacity>
 
         </View>

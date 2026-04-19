@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from 'react-i18next';
 import { getMyProfileRequest } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 export default function ProfileScreen() {
+  const { t } = useTranslation();
   const { accessToken, logout, refreshAuthTokens } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -25,10 +27,10 @@ export default function ProfileScreen() {
         if (err.status === 401) {
           const refreshed = await refreshAuthTokens();
           if (refreshed) {
-             return; // Let the effect re-run when the new accessToken prop triggers
+             return;
           }
         }
-        if (isMounted) setError(err.message || "Failed to load profile");
+        if (isMounted) setError(err.message || t('profile.loadFailed'));
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -39,7 +41,7 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center' }]}>
+      <View style={[styles.container, { justifyContent: 'center' }]}> 
         <ActivityIndicator size="large" color="#085836" />
       </View>
     );
@@ -48,7 +50,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.headerTitle}>My Profile</Text>
+        <Text style={styles.headerTitle}>{t('profile.title')}</Text>
 
         {error ? (
           <View style={styles.errorBox}>
@@ -65,29 +67,29 @@ export default function ProfileScreen() {
             <View style={styles.divider} />
 
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Address</Text>
+              <Text style={styles.detailLabel}>{t('profile.address')}</Text>
               <Text style={styles.detailValue}>{profile.address}</Text>
             </View>
             
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>District</Text>
+              <Text style={styles.detailLabel}>{t('profile.district')}</Text>
               <Text style={styles.detailValue}>{profile.district}</Text>
             </View>
 
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>State & Pincode</Text>
+              <Text style={styles.detailLabel}>{t('profile.statePincode')}</Text>
               <Text style={styles.detailValue}>{profile.state}, {profile.pinCode}</Text>
             </View>
 
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Profile Status</Text>
-              <Text style={styles.detailValue}>{profile.profileCompleted ? "Completed" : "Incomplete"}</Text>
+              <Text style={styles.detailLabel}>{t('profile.profileStatus')}</Text>
+              <Text style={styles.detailValue}>{profile.profileCompleted ? t('profile.completed') : t('profile.incomplete')}</Text>
             </View>
           </View>
         ) : null}
 
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-          <Text style={styles.logoutText}>Log Out</Text>
+          <Text style={styles.logoutText}>{t('profile.logout')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
