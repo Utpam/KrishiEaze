@@ -11,6 +11,9 @@ KrishiEaze is an agricultural mobile application designed to empower farmers and
 
 ## Getting Started
 
+<img src="./assets/images/android-icon-background.png" width="300" alt="Home Screen" />
+
+
 ### Prerequisites
 Make sure you have Node.js and npm installed.
 

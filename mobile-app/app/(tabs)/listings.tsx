@@ -3,11 +3,13 @@ import * as Location from 'expo-location';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { getNearestMandiRequest, updateLocationRequest } from '../services/api';
 
 export default function ListingsScreen() {
   const { accessToken } = useAuth();
+  const router = useRouter();
   const [crop, setCrop] = useState('');
   const [mandiList, setMandiList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -101,7 +103,18 @@ export default function ListingsScreen() {
           </View>
         ) : (
           mandiList.map((mandi) => (
-            <View key={mandi.mandiId} style={styles.card}>
+            <TouchableOpacity 
+              key={mandi.mandiId} 
+              style={styles.card}
+              onPress={() => router.push({
+                pathname: '/create-listing',
+                params: {
+                  selectedMandiId: mandi.mandiId,
+                  mandiName: mandi.mandiName,
+                  cropName: crop
+                }
+              })}
+            >
               <View style={styles.cardHeader}>
                 <Text style={styles.mandiName}>{mandi.mandiName}</Text>
                 <View style={styles.distanceBadge}>
@@ -123,7 +136,7 @@ export default function ListingsScreen() {
                   <Text style={styles.priceValue}>{mandi.modalPrice}</Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))
         )}
         {/* Extra padding to prevent the Tabs from covering content */}
