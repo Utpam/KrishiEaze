@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Modal, ActivityIndicator, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Feather, MaterialIcons, Ionicons } from '@expo/vector-icons';
-import * as Location from 'expo-location';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as Location from 'expo-location';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from './context/AuthContext';
+import { createSellRequest } from './services/api';
 
 export default function CreateListingScreen() {
   const router = useRouter();
-  
+  const params = useLocalSearchParams();
+  const { accessToken } = useAuth();
+
   const [formData, setFormData] = useState({
-    cropName: 'Tomato',
+    cropName: params.cropName ? String(params.cropName) : 'Tomato',
     quantity: '1200',
     unit: 'kg',
     expectedPricePerUnit: '18',
@@ -23,6 +27,7 @@ export default function CreateListingScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showQualityModal, setShowQualityModal] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -44,7 +49,7 @@ export default function CreateListingScreen() {
         setIsFetchingLocation(false);
         return;
       }
-      
+
       let location = await Location.getCurrentPositionAsync({});
       handleChange('lat', location.coords.latitude.toString());
       handleChange('lng', location.coords.longitude.toString());
@@ -55,9 +60,38 @@ export default function CreateListingScreen() {
     }
   };
 
-  const handleSave = () => {
-    console.log("Saving new listing:", formData);
-    router.back();
+  const handleSave = async () => {
+    if (!accessToken) {
+      Alert.alert('Error', 'Not authenticated');
+      return;
+    }
+
+    if (!params.selectedMandiId) {
+      Alert.alert('Error', 'No Mandi selected. Please go back and select a Mandi.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        selectedMandiId: parseInt(String(params.selectedMandiId), 10),
+        cropName: formData.cropName,
+        quantity: parseFloat(formData.quantity),
+        unit: formData.unit,
+        expectedPricePerUnit: parseFloat(formData.expectedPricePerUnit),
+        harvestDate: formData.harvestDate,
+        qualityGrade: formData.qualityGrade
+      };
+
+      await createSellRequest(accessToken, payload);
+      Alert.alert('Success', 'Sell request created successfully');
+      // router.back();
+      router.replace('/(tabs)/orders');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to create sell request');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,7 +106,7 @@ export default function CreateListingScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        
+
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Crop Details</Text>
 
@@ -80,7 +114,7 @@ export default function CreateListingScreen() {
             <Text style={styles.label}>Crop Name</Text>
             <View style={styles.inputContainer}>
               <MaterialIcons name="local-florist" size={20} color="#666" style={styles.inputIcon} />
-              <TextInput 
+              <TextInput
                 style={styles.input}
                 value={formData.cropName}
                 onChangeText={(text) => handleChange('cropName', text)}
@@ -93,7 +127,7 @@ export default function CreateListingScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Quantity</Text>
             <View style={styles.inputContainer}>
-              <TextInput 
+              <TextInput
                 style={styles.input}
                 value={formData.quantity}
                 onChangeText={(text) => handleChange('quantity', text)}
@@ -106,12 +140,12 @@ export default function CreateListingScreen() {
               </View>
             </View>
           </View>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Expected Price Per Unit (₹)</Text>
             <View style={styles.inputContainer}>
               <MaterialIcons name="currency-rupee" size={20} color="#666" style={styles.inputIcon} />
-              <TextInput 
+              <TextInput
                 style={styles.input}
                 value={formData.expectedPricePerUnit}
                 onChangeText={(text) => handleChange('expectedPricePerUnit', text)}
@@ -126,7 +160,7 @@ export default function CreateListingScreen() {
           <Text style={styles.sectionTitle}>Harvest & Quality</Text>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Harvest Date</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.inputContainer}
               onPress={() => setShowDatePicker(true)}
             >
@@ -147,7 +181,7 @@ export default function CreateListingScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Quality Grade</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.inputContainer}
               onPress={() => setShowQualityModal(true)}
             >
@@ -175,11 +209,11 @@ export default function CreateListingScreen() {
             </TouchableOpacity>
           </View>
           <View style={{ height: 1, backgroundColor: '#f0f0f0', marginBottom: 15 }} />
-          
+
           <View style={styles.row}>
             <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
               <Text style={styles.label}>Latitude</Text>
-              <TextInput 
+              <TextInput
                 style={[styles.input, styles.inputStandalone]}
                 value={formData.lat}
                 onChangeText={(text) => handleChange('lat', text)}
@@ -188,7 +222,7 @@ export default function CreateListingScreen() {
             </View>
             <View style={[styles.inputGroup, { flex: 1 }]}>
               <Text style={styles.label}>Longitude</Text>
-              <TextInput 
+              <TextInput
                 style={[styles.input, styles.inputStandalone]}
                 value={formData.lng}
                 onChangeText={(text) => handleChange('lng', text)}
@@ -198,10 +232,14 @@ export default function CreateListingScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSave}>
-          <Text style={styles.submitButtonText}>Publish Listing</Text>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSave} disabled={isSubmitting}>
+          {isSubmitting ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.submitButtonText}>Publish Listing</Text>
+          )}
         </TouchableOpacity>
-        
+
         <View style={{ height: 40 }} />
       </ScrollView>
 
@@ -211,9 +249,9 @@ export default function CreateListingScreen() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select Quality Grade</Text>
             {['A', 'B', 'C'].map((grade) => (
-              <TouchableOpacity 
-                key={grade} 
-                style={styles.modalOption} 
+              <TouchableOpacity
+                key={grade}
+                style={styles.modalOption}
                 onPress={() => {
                   handleChange('qualityGrade', grade);
                   setShowQualityModal(false);

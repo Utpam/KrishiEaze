@@ -34,7 +34,7 @@ public class SellRequest {
     private String qualityGrade;
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
+    private LocalDateTime requestDate = LocalDateTime.now();
     private Double lat;
     private Double lng;
-    private LocalDateTime requestDate = LocalDateTime.now();
 }

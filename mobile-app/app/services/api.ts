@@ -126,3 +126,22 @@ export const getNearestMandiRequest = async (token: string, crop: string) => {
     }
   });
 };
+
+export const createSellRequest = async (token: string, data: any) => {
+  return apiClient('/api/v1/mandi/sell-request', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const getMySellRequests = async (token: string) => {
+  return apiClient('/api/v1/mandi/sell-request/my-requests', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};
