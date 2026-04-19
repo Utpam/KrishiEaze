@@ -14,10 +14,8 @@ export default function HomeScreen() {
     let direction = 1;
     const intervalId = setInterval(() => {
       if (scrollRef.current) {
-        scrollPosition += direction * 0.5; // adjust speed here
+        scrollPosition += direction * 0.5;
         scrollRef.current.scrollTo({ x: scrollPosition, animated: false });
-        
-        // Reverse direction at edges
         if (scrollPosition >= 180) {
           direction = -1;
         } else if (scrollPosition <= 0) {
@@ -43,39 +41,32 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-
-      {/* Language Selection Modal */}
       <Modal visible={langModalVisible} transparent={true} animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Choose Language</Text>
+            <Text style={styles.modalTitle}>{t('common.chooseLanguage')}</Text>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('en')}>
-              <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>English</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>{t('common.english')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('hi')}>
-              <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>हिंदी</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>{t('common.hindi')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('mr')}>
-              <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>मराठी</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>{t('common.marathi')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.closeModalButton} onPress={() => setLangModalVisible(false)}>
-              <Text style={styles.closeModalText}>Cancel</Text>
+              <Text style={styles.closeModalText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-
-        {/* Header */}
         <View style={styles.header}>
-          {/* <TouchableOpacity>
-            <Feather name="menu" size={26} color="#085836" />
-          </TouchableOpacity> */}
           <Text style={styles.logoText}>{t('common.krishieaze')}</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langButton}>
@@ -88,7 +79,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <View style={styles.avatarContainer}>
             <Image
@@ -101,11 +91,8 @@ export default function HomeScreen() {
             <Text style={styles.nameText}>Rajesh Kumar</Text>
           </View>
         </View>
-        <Text style={styles.statusText}>
-          {t('home.farmStatus')}
-        </Text>
+        <Text style={styles.statusText}>{t('home.farmStatus')}</Text>
 
-        {/* Earnings Card */}
         <View style={styles.earningsCard}>
           <Text style={styles.earningsTitle}>{t('home.totalEarnings')}</Text>
           <View style={styles.earningsRow}>
@@ -120,7 +107,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
             <FontAwesome5 name="truck" size={24} color="#D95A11" style={styles.statIcon} />
@@ -134,7 +120,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Latest Mandi Prices */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t('home.latestMandiPrices')}</Text>
           <TouchableOpacity>
@@ -173,12 +158,10 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
 
-        {/* Recent Transactions */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t('home.recentTransactions')}</Text>
         </View>
         <View style={styles.transactionsContainer}>
-
           <View style={styles.transactionItem}>
             <View style={[styles.txIconContainer, { backgroundColor: '#E8F5E9' }]}>
               <FontAwesome5 name="shopping-cart" size={16} color="#085836" />
@@ -226,10 +209,8 @@ export default function HomeScreen() {
               </View>
             </View>
           </View>
-
         </View>
 
-        {/* Extra padding to prevent the FAB/Tabs from covering content */}
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>

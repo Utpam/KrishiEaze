@@ -2,10 +2,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { verifyOtpRequest } from '../services/api';
 
 export default function OTPScreen() {
+  const { t } = useTranslation();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -29,13 +31,10 @@ export default function OTPScreen() {
           role: 'FARMER' 
         };
 
-        // Save the authenticated user and tokens to global store
         await loginSession(accessToken, refreshToken, user);
-
-        // Navigation is automatically intercepted by AuthContext
       }
     } catch (error: any) {
-      setErrorMsg(error?.message || "Invalid OTP. Please try again.");
+      setErrorMsg(error?.message || t('otp.invalidOtp'));
     } finally {
       setLoading(false);
     }
@@ -45,8 +44,8 @@ export default function OTPScreen() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
         <View style={styles.headerContainer}>
-          <Text style={styles.title}>Confirm OTP</Text>
-          <Text style={styles.subtitle}>Enter the 6-digit code sent to +91 {mobileNo}</Text>
+          <Text style={styles.title}>{t('otp.title')}</Text>
+          <Text style={styles.subtitle}>{t('otp.subtitle', { mobileNo })}</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -57,7 +56,7 @@ export default function OTPScreen() {
                 styles.input,
                 otp.length > 0 ? { fontSize: 22, letterSpacing: 8, fontWeight: 'bold' } : { fontSize: 16, fontWeight: 'normal' }
               ]}
-              placeholder="Enter OTP"
+              placeholder={t('otp.enterOtp')}
               keyboardType="number-pad"
               maxLength={6}
               value={otp}
@@ -71,21 +70,20 @@ export default function OTPScreen() {
             onPress={handleVerifyOTP}
             disabled={otp.length < 6 || loading}
           >
-            {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.buttonText}>Verify & Proceed</Text>}
+            {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.buttonText}>{t('otp.verifyProceed')}</Text>}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backText}>Change Mobile Number</Text>
+            <Text style={styles.backText}>{t('otp.changeMobileNumber')}</Text>
           </TouchableOpacity>
 
-          {/* Dev Mode Debug Bypass */}
           <TouchableOpacity
             style={{ marginTop: 20, alignItems: 'center', backgroundColor: '#eee', padding: 10, borderRadius: 8 }}
             onPress={async () => {
               await loginSession('debug_token_home', 'debug_refresh_token', { profileCompleted: true, role: 'FARMER' });
             }}
           >
-            <Text style={{ color: '#085836', fontWeight: 'bold' }}>Debug: Skip to Home</Text>
+            <Text style={{ color: '#085836', fontWeight: 'bold' }}>{t('otp.debugSkipHome')}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
