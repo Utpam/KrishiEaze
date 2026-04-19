@@ -6,9 +6,11 @@ import TransactionTable from '../components/TransactionTable';
 import OrderRequestCard from '../components/OrderRequestCard';
 import MobileBottomNav from '../components/MobileBottomNav';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; 
 
 const Dashboard = () => {
     const { user } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
 
     return (
         <div className="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark transition-colors duration-300">
@@ -26,7 +28,7 @@ const Dashboard = () => {
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
                             <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-1">Welcome back, <span className="text-primary font-semibold">{user?.name || 'Farmer'}</span>! Here's what's happening today.</p>
                         </div>
-                        <button className="flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium w-full md:w-auto">
+                        <button className="flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium w-full md:w-auto" onClick={() => navigate('/sell')}>
                             <span className="material-icons">add_circle</span>
                             <span>New Listing</span>
                         </button>
