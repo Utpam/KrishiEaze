@@ -30,11 +30,36 @@ public class WebSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final ObjectMapper objectMapper; // Let Spring inject the existing bean
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
-        http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    // 1. Add this Bean to your WebSecurityConfig class
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    
+    // Allow your frontend origin
+    configuration.setAllowedOrigins(List.of("http://localhost:3000")); 
+    
+    // Allow standard methods
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    
+    // Allow all headers (important for JWT/Authorization)
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+    
+    // Allow credentials (since you're using Cookies/Sessions)
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
+
+// 2. Update your securityFilterChain method to use it
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add this line
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // ... rest of your existing config
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll() // Allow OTP and Login endpoints
                          .requestMatchers("/api/profile/**").authenticated()
