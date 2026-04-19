@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class WebSecurityConfig {
     private final ObjectMapper objectMapper; // Let Spring inject the existing bean
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -39,7 +40,7 @@ public class WebSecurityConfig {
                          .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/mandi/sell-request").hasRole("FARMER")
                         .requestMatchers(HttpMethod.GET, "/api/v1/mandi/sell-request/my-requests").hasRole("FARMER")
-
+                        .requestMatchers(HttpMethod.POST, "/api/v1/transport/calculate").hasRole("FARMER")
                         .anyRequest().authenticated()
         )
                 .exceptionHandling(ex-> ex.authenticationEntryPoint((request, response, authException) -> {

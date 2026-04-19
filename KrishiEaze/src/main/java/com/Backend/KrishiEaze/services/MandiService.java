@@ -183,4 +183,49 @@ public class MandiService {
                 .sorted(Comparator.comparingDouble(MandiResponseDto::getDistanceKm))
                 .collect(Collectors.toList());
     }
+    // ✅ Add this method to MandiService.java
+    public Double getLivePriceForMandi(String mandiName, String crop, String state) {
+        try {
+            String encodedCrop = URLEncoder.encode(crop, StandardCharsets.UTF_8);
+            String encodedState = URLEncoder.encode(state, StandardCharsets.UTF_8);
+
+            // Fetch small batch of recent records for that state/crop
+            String rawUrl = BASE_URL
+                    + "?api-key=" + API_KEY
+                    + "&format=json"
+                    + "&limit=50"
+                    + "&filters%5Bcommodity%5D=" + encodedCrop
+                    + "&filters%5Bstate%5D=" + encodedState;
+
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(rawUrl).openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("user-agent", "Mozilla/5.0");
+
+            java.util.Scanner scanner = new java.util.Scanner(conn.getInputStream());
+            StringBuilder rawResponse = new StringBuilder();
+            while (scanner.hasNextLine()) rawResponse.append(scanner.nextLine());
+            scanner.close();
+
+            ObjectMapper mapper = new ObjectMapper();
+            AgmarknetApiResponseDto dto = mapper.readValue(rawResponse.toString(), AgmarknetApiResponseDto.class);
+
+            if (dto.getRecords() == null) return null;
+
+            // Clean DB mandi name once
+            String cleanDbMandi = mandiName.toLowerCase().replace("apmc", "").replaceAll("\\(.*?\\)", "").trim();
+
+            return dto.getRecords().stream()
+                    .filter(record -> {
+                        String apiMarket = record.getMarket().toLowerCase().trim();
+                        return apiMarket.contains(cleanDbMandi) || cleanDbMandi.contains(apiMarket);
+                    })
+                    .findFirst()
+                    .map(record -> record.getModal_price())
+                    .orElse(null);
+
+        } catch (Exception e) {
+            System.err.println(">>> Error fetching specific price: " + e.getMessage());
+            return null;
+        }
+    }
 }
