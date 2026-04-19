@@ -237,13 +237,92 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Sell Request (Farmer)",
+      "item": [
+        {
+          "name": "Create Sell Request",
+          "description": "Farmer clicks Sell Request button on a mandi block. lat/lng is automatically taken from farmer profile - no need to send it manually.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"selectedMandiId\": 9,\r\n  \"cropName\": \"Tomato\",\r\n  \"quantity\": 1200,\r\n  \"unit\": \"kg\",\r\n  \"expectedPricePerUnit\": 18.50,\r\n  \"harvestDate\": \"2026-04-18\",\r\n  \"qualityGrade\": \"A\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/mandi/sell-request",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "mandi",
+                "sell-request"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Sell Requests",
+          "description": "Farmer views all their own sell requests sorted by latest first.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/mandi/sell-request/my-requests",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "mandi",
+                "sell-request",
+                "my-requests"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
     {
       "key": "access_token",
       "value": "your_jwt_token_here",
-      "type": "string"
+      "type": "string",
+      "description": "JWT access token obtained after OTP verification"
+    },
+    {
+      "key": "crop",
+      "value": "Tomato",
+      "type": "string",
+      "description": "Crop name to search for in nearby mandis (e.g. Tomato, Wheat, Onion)"
     }
   ]
 }
