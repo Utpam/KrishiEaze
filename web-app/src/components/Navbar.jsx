@@ -1,47 +1,57 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import LanguageSwitcher from './LanguageSwitcher';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../auth/authSlice';
 import Logo_No_text from '../../Public/Logo_No_text.png';
 import { useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 const Navbar = () => {
     const { isAuthenticated, user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleLogout = () => {
         dispatch(logout());
         navigate('/');
     };
 
+    // If we're on the dashboard/internal pages, the sidebar shows the logo. On home/landing, we always want the logo in the Navbar.
+    const isHomePage = location.pathname === '/';
+    const shouldHideLogoOnDesktop = user && !isHomePage;
+
     return (
         <nav className="sticky top-0 z-50 w-full glass-effect bg-white/80 dark:bg-background-dark/90 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     
-                    {/* Logo - Always show on non-auth. On auth, show only on mobile since desktop has sidebar logo */}
+                    {/* Logo */}
                     <Link
                         to="/"
-                        className={`flex-shrink-0 flex items-center gap-2 cursor-pointer ${user ? 'md:hidden' : ''}`}
+                        className={`flex-shrink-0 flex items-center gap-2 cursor-pointer ${shouldHideLogoOnDesktop ? 'md:hidden' : ''}`}
                     >
                         <span className="material-icons text-primary text-4xl">
                             <img src={Logo_No_text} className='w-[3rem] md:w-[4rem]' alt="Logo" />
                         </span>
-                        <span className="font-bold text-xl md:text-2xl tracking-tight text-primary dark:text-green-400">Krishiaze</span>
+                        <span className="font-bold text-xl md:text-2xl tracking-tight text-primary dark:text-green-400">KrishiEaze</span>
                     </Link>
 
                     {/* Desktop Links (Non-auth) */}
                     {!user && (
                         <div className="hidden md:flex space-x-8 items-center">
                             <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Home</Link>
-                            <Link to="/mandi" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Mandi Prices</Link>
-                            <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">Dashboard</Link>
+                            <Link to="/mandi" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">{t('sidebar.mandiPrices', 'Mandi Prices')}</Link>
+                            <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-green-400 font-medium transition">{t('sidebar.dashboard', 'Dashboard')}</Link>
                         </div>
                     )}
 
-                    <div className="flex items-center space-x-3 md:space-x-4">
+                    <div className="flex items-center space-x-3 md:space-x-4 ml-auto">
+                        <LanguageSwitcher />
                         <ThemeToggle />
                         {!isAuthenticated ? (
                             <>

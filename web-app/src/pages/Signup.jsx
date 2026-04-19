@@ -27,8 +27,6 @@ const Signup = () => {
     const [district, setDistrict] = useState('');
     const [stateName, setStateName] = useState('');
     const [pincode, setPincode] = useState('');
-    const [farmerType, setFarmerType] = useState('Marginal');
-    const [landArea, setLandArea] = useState('');
 
     // To track auth state if we came from login where OTP is already verified
     const [otpVerified, setOtpVerified] = useState(initialStep === 2);
@@ -62,19 +60,14 @@ const Signup = () => {
 
         // Proceed to update profile
         const updateResult = await dispatch(updateProfileThunk({
-            username,
-            email,
             firstName,
+            middleName,
             surName,
             address,
-            village,
-            district,
             state: stateName,
+            district,
             pinCode: pincode,
-            profileImageUrl: "",
-            farmerType: role === 'Farmer' ? farmerType : null,
-            landArea: role === 'Farmer' ? landArea : null,
-            roles: [role.toUpperCase()] // FARMER or BUYER
+            roles: [`ROLE_${role.toUpperCase()}`]
         }));
 
         if (updateProfileThunk.fulfilled.match(updateResult)) {
@@ -273,35 +266,6 @@ const Signup = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {role === 'Farmer' && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Farmer Type</label>
-                                        <select
-                                            className="w-full px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all text-sm md:text-base"
-                                            value={farmerType}
-                                            onChange={(e) => setFarmerType(e.target.value)}
-                                        >
-                                            <option value="Marginal">Marginal</option>
-                                            <option value="Small">Small</option>
-                                            <option value="Medium">Medium</option>
-                                            <option value="Large">Large</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Land Area (Acres)</label>
-                                        <input
-                                            type="number"
-                                            className="w-full px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all text-sm md:text-base"
-                                            placeholder="e.g. 2.5"
-                                            value={landArea}
-                                            onChange={(e) => setLandArea(e.target.value)}
-                                            step="0.1"
-                                        />
-                                    </div>
-                                </div>
-                            )}
 
                             <button
                                 type="submit"

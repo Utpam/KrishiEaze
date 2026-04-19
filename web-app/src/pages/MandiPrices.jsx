@@ -5,7 +5,7 @@ import MobileBottomNav from '../components/MobileBottomNav';
 import { mandiAPI } from '../api';
 
 const MandiPrices = () => {
-    const [searchTerm, setSearchTerm] = useState('Wheat'); // default crop to search
+    const [searchTerm, setSearchTerm] = useState(''); // default crop to search
     const [cropQuery, setCropQuery] = useState('Wheat');
     const [selectedState, setSelectedState] = useState('All');
     
@@ -119,7 +119,9 @@ const MandiPrices = () => {
                                         )}
                                     </div>
                                     <div className="mb-4">
-                                        <span className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">₹{item.modalPrice || 'N/A'}</span>
+                                        <span className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                                            ₹{item.modalPrice ? String(item.modalPrice).replace(/₹/g, '').trim() : 'N/A'}
+                                        </span>
                                         <span className="text-sm text-gray-500 ml-1">/{item.priceUnit || 'Quintal'}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-[10px] md:text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700">

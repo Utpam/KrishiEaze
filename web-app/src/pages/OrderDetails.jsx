@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import MobileBottomNav from '../components/MobileBottomNav';
+import { mandiAPI } from '../api';
 
 const OrderDetails = () => {
-    const orders = [
-        { id: '#ORD-0012', buyer: 'Reliance Retail', item: 'Wheat (Lokwan)', qty: '25 Qtls', amount: '₹61,250', status: 'Delivered', date: '12 Feb, 2024' },
-        { id: '#ORD-0015', buyer: 'Local Mandi Trader', item: 'Soybean', qty: '10 Qtls', amount: '₹48,000', status: 'Processing', date: '14 Feb, 2024' },
-        { id: '#ORD-0018', buyer: 'BigBasket', item: 'Onion (Red)', qty: '50 Qtls', amount: '₹60,000', status: 'Pending', date: '15 Feb, 2024' },
-    ];
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRequests = async () => {
+            try {
+                const response = await mandiAPI.getMySellRequests();
+                setRequests(response.data);
+            } catch (error) {
+                console.error("Error fetching transactions:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRequests();
+    }, []);
 
     return (
         <div className="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark transition-colors duration-300">
@@ -36,29 +48,35 @@ const OrderDetails = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                    {orders.map((order) => (
+                                    {loading ? (
+                                        <tr><td colSpan="7" className="text-center py-8 text-gray-500">Loading...</td></tr>
+                                    ) : requests.length === 0 ? (
+                                        <tr><td colSpan="7" className="text-center py-8 text-gray-500">No order history found.</td></tr>
+                                    ) : requests.map((order) => {
+                                        const amount = order.quantity * order.expectedPricePerUnit;
+                                        return (
                                         <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">{order.id}</td>
-                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">{order.buyer}</td>
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">#ORD-{order.id.toString().padStart(4, '0')}</td>
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">{order.mandi?.name || 'Local Mandi'}</td>
                                             <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                                                <div>{order.item}</div>
-                                                <div className="text-xs text-gray-400">{order.qty}</div>
+                                                <div>{order.cropName}</div>
+                                                <div className="text-xs text-gray-400">{order.quantity} {order.unit}</div>
                                             </td>
-                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-bold">{order.amount}</td>
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-bold">₹{amount.toLocaleString()}</td>
                                             <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'Delivered' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                                                        order.status === 'Processing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
-                                                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'CONFIRMED' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                        order.status === 'PENDING' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                                                            'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                                                     }`}>
                                                     {order.status}
                                                 </span>
                                             </td>
-                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{order.date}</td>
+                                            <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{new Date(order.requestDate).toLocaleDateString()}</td>
                                             <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 <button className="text-primary hover:text-green-700 font-medium">View</button>
                                             </td>
                                         </tr>
-                                    ))}
+                                    )})}
                                 </tbody>
                             </table>
                         </div>
