@@ -309,6 +309,48 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Transport",
+      "item": [
+        {
+          "name": "Calculate Transport Cost and Profit",
+          "description": "Farmer clicks Calculate Profit on a mandi block. A popup appears where farmer fills vehicle mileage, fuel type (PETROL/DIESEL/CNG), fuel price, crop and quantity. Returns gross revenue, transport cost per quintal and net profit.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"mandiId\": 9,\r\n  \"crop\": \"Wheat\",\r\n  \"quantity\": 50,\r\n  \"fuelPrice\": 92.5,\r\n  \"mileage\": 12.0,\r\n  \"fuelType\": \"DIESEL\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/transport/calculate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "transport",
+                "calculate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
