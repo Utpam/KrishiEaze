@@ -3,11 +3,51 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getMyProfileRequest } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
+  const { accessToken, refreshAuthTokens } = useAuth();
+
   const [langModalVisible, setLangModalVisible] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
   const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProfile = async () => {
+      try {
+        if (!accessToken) return;
+
+        const res = await getMyProfileRequest(accessToken);
+        if (isMounted) {
+          setProfile(res);
+        }
+      } catch (err: any) {
+        if (err?.status === 401) {
+          const refreshed = await refreshAuthTokens();
+          if (refreshed) {
+            try {
+              const retryRes = await getMyProfileRequest(accessToken);
+              if (isMounted) {
+                setProfile(retryRes);
+              }
+            } catch {
+              // ignore retry failure here
+            }
+          }
+        }
+      }
+    };
+
+    fetchProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [accessToken, refreshAuthTokens]);
 
   useEffect(() => {
     let scrollPosition = 0;
@@ -39,6 +79,11 @@ export default function HomeScreen() {
     return 'Eng';
   };
 
+  const fullName =
+    [profile?.firstName, profile?.middleName, profile?.surName]
+      .filter(Boolean)
+      .join(' ') || 'User';
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <Modal visible={langModalVisible} transparent={true} animationType="fade">
@@ -47,15 +92,21 @@ export default function HomeScreen() {
             <Text style={styles.modalTitle}>{t('common.chooseLanguage')}</Text>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('en')}>
-              <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>{t('common.english')}</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'en' && styles.langOptionTextActive]}>
+                {t('common.english')}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('hi')}>
-              <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>{t('common.hindi')}</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'hi' && styles.langOptionTextActive]}>
+                {t('common.hindi')}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.langOption} onPress={() => changeLanguage('mr')}>
-              <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>{t('common.marathi')}</Text>
+              <Text style={[styles.langOptionText, i18n.language === 'mr' && styles.langOptionTextActive]}>
+                {t('common.marathi')}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.closeModalButton} onPress={() => setLangModalVisible(false)}>
@@ -82,15 +133,18 @@ export default function HomeScreen() {
         <View style={styles.welcomeSection}>
           <View style={styles.avatarContainer}>
             <Image
-              source={{ uri: 'https://media.istockphoto.com/id/939194718/photo/old-age-indian-man-portrait-at-outdoor.jpg?s=612x612&w=0&k=20&c=874l6agIVEXT22fjC6LfdFpjf6J_AZjH-XtRRsAWIao=' }}
+              source={{
+                uri: 'https://media.istockphoto.com/id/939194718/photo/old-age-indian-man-portrait-at-outdoor.jpg?s=612x612&w=0&k=20&c=874l6agIVEXT22fjC6LfdFpjf6J_AZjH-XtRRsAWIao=',
+              }}
               style={styles.avatar}
             />
           </View>
           <View style={styles.welcomeTextContainer}>
             <Text style={styles.greetingText}>{t('home.greetingUser')}</Text>
-            <Text style={styles.nameText}>Rajesh Kumar</Text>
+            <Text style={styles.nameText}>{fullName}</Text>
           </View>
         </View>
+
         <Text style={styles.statusText}>{t('home.farmStatus')}</Text>
 
         <View style={styles.earningsCard}>
@@ -126,6 +180,7 @@ export default function HomeScreen() {
             <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableOpacity>
         </View>
+
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -140,6 +195,7 @@ export default function HomeScreen() {
             <Text style={styles.mandiPrice}>₹2,150</Text>
             <Text style={styles.mandiUnit}>{t('home.perQuintal')}</Text>
           </View>
+
           <View style={styles.mandiCard}>
             <View style={styles.mandiCardHeader}>
               <Text style={styles.mandiItemName}>{t('home.riceBasmati')}</Text>
@@ -148,6 +204,7 @@ export default function HomeScreen() {
             <Text style={styles.mandiPrice}>₹4,200</Text>
             <Text style={styles.mandiUnit}>{t('home.perQuintal')}</Text>
           </View>
+
           <View style={styles.mandiCard}>
             <View style={styles.mandiCardHeader}>
               <Text style={styles.mandiItemName}>{t('home.maize')}</Text>
@@ -161,6 +218,7 @@ export default function HomeScreen() {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t('home.recentTransactions')}</Text>
         </View>
+
         <View style={styles.transactionsContainer}>
           <View style={styles.transactionItem}>
             <View style={[styles.txIconContainer, { backgroundColor: '#E8F5E9' }]}>
@@ -173,7 +231,9 @@ export default function HomeScreen() {
             <View style={styles.txRight}>
               <Text style={styles.txAmountPositive}>+₹18,200</Text>
               <View style={[styles.txBadge, { backgroundColor: '#D4EDDA' }]}>
-                <Text style={[styles.txBadgeText, { color: '#155724' }]}>{t('home.status.completed')}</Text>
+                <Text style={[styles.txBadgeText, { color: '#155724' }]}>
+                  {t('home.status.completed')}
+                </Text>
               </View>
             </View>
           </View>
@@ -189,7 +249,9 @@ export default function HomeScreen() {
             <View style={styles.txRight}>
               <Text style={styles.txAmountNegative}>-₹2,450</Text>
               <View style={[styles.txBadge, { backgroundColor: '#E2E3E5' }]}>
-                <Text style={[styles.txBadgeText, { color: '#383D41' }]}>{t('home.status.processed')}</Text>
+                <Text style={[styles.txBadgeText, { color: '#383D41' }]}>
+                  {t('home.status.processed')}
+                </Text>
               </View>
             </View>
           </View>
@@ -205,7 +267,9 @@ export default function HomeScreen() {
             <View style={styles.txRight}>
               <Text style={styles.txAmountPositive}>+₹12,500</Text>
               <View style={[styles.txBadge, { backgroundColor: '#D4EDDA' }]}>
-                <Text style={[styles.txBadgeText, { color: '#155724' }]}>{t('home.status.completed')}</Text>
+                <Text style={[styles.txBadgeText, { color: '#155724' }]}>
+                  {t('home.status.completed')}
+                </Text>
               </View>
             </View>
           </View>

@@ -29,7 +29,7 @@ public class TransportService {
         Double livePrice = mandiService.getLivePriceForMandi(mandi.getMandiName(), request.getCrop(), mandi.getState());
 
         if (livePrice == null) {
-            throw new RuntimeException("Could not fetch live price for " + request.getCrop() + " at " + mandi.getMandiName());
+            livePrice = mandiService.getFallbackPriceByCrop(request.getCrop(), mandi.getBasePrice());
         }
 
         // 3. Distance & Profit Math

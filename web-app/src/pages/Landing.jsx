@@ -26,7 +26,7 @@ const Landing = () => {
                                     <span className="text-primary dark:text-green-400"> Direct to You.</span>
                                 </h1>
                                 <p className="text-base md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto xl:mx-0">
-                                    Connecting farmers directly with consumers and businesses. Eliminate middlemen, get fair prices, and access real-time Mandi rates effortlessly.
+                                    Connecting farmers directly with Mandi. Eliminate middlemen, get fair prices, and access real-time Mandi rates effortlessly.
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center xl:justify-start">
                                     <button

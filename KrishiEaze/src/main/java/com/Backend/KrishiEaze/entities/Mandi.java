@@ -24,4 +24,5 @@ public class Mandi {
     private Double lat;
     @Column(nullable = false)
     private Double lng;
+    private Double basePrice;
 }

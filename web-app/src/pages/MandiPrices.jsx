@@ -5,7 +5,7 @@ import MobileBottomNav from '../components/MobileBottomNav';
 import { mandiAPI } from '../api';
 
 const MandiPrices = () => {
-    const [searchTerm, setSearchTerm] = useState(''); // default crop to search
+    const [searchTerm, setSearchTerm] = useState('Wheat'); // default crop to search
     const [cropQuery, setCropQuery] = useState('Wheat');
     const [selectedState, setSelectedState] = useState('All');
     
